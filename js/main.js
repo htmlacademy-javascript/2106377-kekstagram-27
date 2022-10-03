@@ -15,7 +15,7 @@ function checkStringLength(string, maxlength) {
   if (string.length <= maxlength) {
     return true;
   }
-  console.log('Комментарий слишком длинный');
+  // console.log('Комментарий слишком длинный');
   return false;
 }
 
