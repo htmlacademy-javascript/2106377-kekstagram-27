@@ -29,30 +29,23 @@ checkStringLength(50, 140);*/
 // Создание объекта для комментария. Структура:
 // идентификатор — id — случайное число. Идентификаторы не должны повторяться.
 // Поле avatar — строка, значение которой формируется по правилу img/avatar-{{случайное число от 1 до 6}}.svg. Аватарки подготовлены в директории img.
-// message — для формирования текста комментария —  вам необходимо взять одно или два случайных предложения из представленных ниже:
-// Всё отлично!
-// В целом всё неплохо. Но не всё.
+// message — для формирования текста комментария —  вам необходимо взять одно или два случайных предложения из представленных
+const COMMENT_COUNT = 5;
+const AVATAR_COUNT = 6;
+const OBJECT_COUNT = 25;
 
-const MAX_ID_NUMBER = 200;
+let c = 0;
 
-const getRandomIdComment = (min = 1 , max = MAX_ID_NUMBER) => {
-  const MINIMALVALUE = Math.ceil(min);
-  const MAXIMALVALUE = Math.floor(max);
-  if (min >= 1 && max <= 200) {
-    const result = Math.random() * (MAXIMALVALUE - MINIMALVALUE + 1) + MINIMALVALUE;
-    // console.log(Math.floor (result));
-    return Math.floor(result);
-  } return NaN;
+const setId = (j) => {
+  c += j;
+  return c;
 };
 
-const AVATAR = [
-  'img/avatar-1.svg',
-  'img/avatar-2.svg',
-  'img/avatar-3.svg',
-  'img/avatar-4.svg',
-  'img/avatar-5.svg',
-  'img/avatar-6.svg',
-];
+const AVATAR = [];
+
+for (let j = 1; j <= AVATAR_COUNT; j++) {
+  AVATAR.push(j);
+}
 
 const MESSAGE = [
   'Всё отлично!',
@@ -72,10 +65,7 @@ const NAME = [
   'Сиверус Снегг',
 ];
 
-const SIMILAR_COMMENT_COUNT = 6;
-
-// функция для получения рандомного числа из интревала положительных чисел
-
+// ф-я для получения рандомного числа из интревала положительных чисел
 const getRandomPositiveInteger = (a, b) => {
   if (a < 0 || b < 0) {
     return NaN;
@@ -87,63 +77,31 @@ const getRandomPositiveInteger = (a, b) => {
 };
 
 // функция для получения рандомного числа из индексов массива на основе предидущей функции
-
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
 // функция -получение объекта
-
-const createComment = () => ({
-  id: getRandomIdComment(),
-  avatar: getRandomArrayElement(AVATAR),
+const createComment = (k) => ({
+  id: setId(k),
+  avatar: `img/avatar-${getRandomArrayElement(AVATAR)}.svg`,
   message: `${getRandomArrayElement(MESSAGE)} + ${getRandomArrayElement(MESSAGE)}`,
   name: getRandomArrayElement(NAME),}
 );
 
-// Создание массива из 25 сгенерированных объектов. Каждый объект массива — описание фотографии, опубликованной пользователем.
-// Структура каждого объекта должна быть следующей:
-// id, число — идентификатор опубликованной фотографии. Это число от 1 до 25. Идентификаторы не должны повторяться.
+//методом from создаем массив комментариев длиной 10 элементов, элементы создаются вызовом функции для создания обекта
+const similarComment = Array.from({length: COMMENT_COUNT}, () => createComment(1));
+
+// Создание массива из 25 сгенерированных объектов(описание фотографии)
+// Структура: id, число — идентификатор опубликованной фотографии. Это число от 1 до 25. Идентификаторы не должны повторяться.
 // url, строка — адрес картинки вида photos/{{i}}.jpg, где {{i}} — это число от 1 до 25. Адреса картинок не должны повторяться.
 // description, строка — описание фотографии. Описание придумайте самостоятельно.
 // likes, число — количество лайков, поставленных фотографии. Случайное число от 15 до 200.
 // comments, массив объектов — список комментариев, оставленных другими пользователями к этой фотографии. Количество комментариев к каждой фотографии вы определяете на своё усмотрение
+let d = 0;
 
-const getRandomId = (min = 1 , max = 25) => {
-  const MINIMALVALUE = Math.ceil(min);
-  const MAXIMALVALUE = Math.floor(max);
-  if (min >= 1 && max <= 25) {
-    const result = Math.random() * (MAXIMALVALUE - MINIMALVALUE + 1) + MINIMALVALUE;
-    // console.log(Math.floor (result));
-    return Math.floor(result);
-  } return NaN;
+const setIdObj = (j) => {
+  d += j;
+  return d;
 };
-
-const ADDRESS_URL = [
-  'photos/1.jpg',
-  'photos/2.jpg',
-  'photos/3.jpg',
-  'photos/4.jpg',
-  'photos/5.jpg',
-  'photos/6.jpg',
-  'photos/7.jpg',
-  'photos/8.jpg',
-  'photos/9.jpg',
-  'photos/10.jpg',
-  'photos/11.jpg',
-  'photos/12.jpg',
-  'photos/13.jpg',
-  'photos/14.jpg',
-  'photos/15.jpg',
-  'photos/16.jpg',
-  'photos/17.jpg',
-  'photos/18.jpg',
-  'photos/19.jpg',
-  'photos/20.jpg',
-  'photos/21.jpg',
-  'photos/22.jpg',
-  'photos/23.jpg',
-  'photos/24.jpg',
-  'photos/25.jpg'
-];
 
 const DESCRIPTION = [
   'Пляж в бухте',
@@ -178,25 +136,22 @@ const getRandomLikes = (min = 15 , max = 200) => {
   const MAXIMALVALUE = Math.floor(max);
   if (min >= 15 && max <= 200) {
     const result = Math.random() * (MAXIMALVALUE - MINIMALVALUE + 1) + MINIMALVALUE;
-    // console.log(Math.floor (result));
     return Math.floor(result);
   } return NaN;
 };
 
-const SIMILAR_DESCPHOTO_COUNT = 25;
-
-//методом from создаем массив (комментарии) длиной 6 элементов, элементы создаются вызовом функции для создания обекта
-
-const similarComment = Array.from({length: SIMILAR_COMMENT_COUNT}, createComment);
-
-const createDescPhoto = () => ({
-  id: getRandomId(),
-  url: getRandomArrayElement(ADDRESS_URL),
+// создаем объект— описание фотографии
+const createDescPhoto = (k) => ({
+  id: setIdObj(k),
+  url: `photos/${setIdObj(k - 1)}.jpg`,
   description: getRandomArrayElement(DESCRIPTION),
-  likes: getRandomLikes (),
-  comments: similarComment,}
-);
+  likes: getRandomLikes(),
+  comments: similarComment,
+});
 
-const similarDescPhoto = Array.from({length: SIMILAR_DESCPHOTO_COUNT}, createDescPhoto);
+// создаем массив из 25 сгенерированных объектов- описаний фото
 
-similarDescPhoto();
+// eslint-disable-next-line no-unused-vars
+const similarDescPhoto = Array.from({length: OBJECT_COUNT}, () => createDescPhoto(1));
+
+// console.log(similarDescPhoto);
