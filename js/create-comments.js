@@ -51,7 +51,8 @@ const createComment = (k) => ({
   name: getRandomArrayElement(NAMES),}
 );
 
-const similarComment = Array.from({length: COMMENT_COUNT}, () => createComment(1));
+const createsimilarComment = () => Array.from({length: COMMENT_COUNT}, () => createComment(1));
 
 export{getRandomArrayElement};
-export{similarComment};
+export{createsimilarComment};
+export{COMMENT_COUNT};
