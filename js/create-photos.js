@@ -1,6 +1,6 @@
 const OBJECT_COUNT = 25;
 import{getRandomArrayElement} from './create-comments.js';
-import{similarComment} from './create-comments.js';
+import{createsimilarComment} from './create-comments.js';
 
 let d = 0;
 
@@ -52,10 +52,11 @@ const createDescPhoto = (k) => ({
   url: `photos/${setIdObj(k - 1)}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomLikes(),
-  comments: similarComment,
+  comments: createsimilarComment,
 });
 
 // eslint-disable-next-line no-unused-vars
-const similarDescPhoto = Array.from({length: OBJECT_COUNT}, () => createDescPhoto(1));
+const createsimilarDescPhoto = () => Array.from({length: OBJECT_COUNT}, () => createDescPhoto(1));
 
 // console.log(similarDescPhoto);
+export{createsimilarDescPhoto};
