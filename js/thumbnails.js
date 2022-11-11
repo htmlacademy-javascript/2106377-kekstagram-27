@@ -13,7 +13,7 @@
 // </a>
 // </template> */
 
-import{createsimilarDescPhoto} from './create-photos.js';
+import{createSimilarDescPhoto} from './create-photos.js';
 import{COMMENT_COUNT} from './create-comments.js';
 // контейнер для изображений др пользователей
 const containerUsersPhoto = document.querySelector('.pictures');
@@ -21,7 +21,7 @@ const containerUsersPhoto = document.querySelector('.pictures');
 const templateUsersPhoto = document.querySelector('#picture').content.querySelector('.picture');
 
 // в переменную выношу экспортированную функцию
-const similarPhoto = createsimilarDescPhoto();
+const similarPhoto = createSimilarDescPhoto();
 // фрагмент
 const similarPhotoFragment = document.createDocumentFragment ();
 // прохожу по каждому элементу в массиве

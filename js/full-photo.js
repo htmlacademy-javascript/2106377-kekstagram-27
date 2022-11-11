@@ -1,5 +1,5 @@
-import{createsimilarComment} from './create-comments.js';
-import{createsimilarDescPhoto} from './create-photos.js';
+import{createSimilarComment} from './create-comments.js';
+import{createSimilarDescPhoto} from './create-photos.js';
 // import{COMMENT_COUNT} from './create-comments.js';
 
 // Реализовать сценарий просмотра фотографий в полноразмерном режиме.
@@ -27,7 +27,7 @@ const newCommentLoad = document.querySelector('.comments-loader');//загруз
 
 // Описание фотографии description вставьте строкой в блок .social__caption.
 const descFullPhoto = document.querySelector('.social__caption');//блок описания фото
-const descThumbnailsPhoto = createsimilarDescPhoto ();
+const descThumbnailsPhoto = createSimilarDescPhoto ();
 
 const thumbnailsLink = document.querySelectorAll('.picture'); //набор ссылок -минифото
 for (let i = 0; i < thumbnailsLink.length; i++) {
@@ -66,7 +66,7 @@ for (let i = 0; i < commentListItem.length; i++ ) {
 }
 
 // в переменную выношу экспортированную функцию (массив из 5 элементов-комментов)
-const similarComment = createsimilarComment();
+const similarComment = createSimilarComment();
 // фрагмент
 const similarCommentFragment = document.createDocumentFragment ();
 // прохожу по каждому элементу в массиве
@@ -113,7 +113,7 @@ export{viewPhotoNoScroll};
 
 // Как связать модули миниатюр и полноразмерного режима?
 // Задача не имеет одного верного решения, поэтому будет правильным:
-// - использование третьего модуля для связки двух других,
+// ++ использование третьего модуля для связки двух других,
 // - импорт модуля полноразмерных изображений в модуль миниатюр и дальнейшая работа с интерфейсом
 //  этого модуля, addEventListener и замыканиями.
 
