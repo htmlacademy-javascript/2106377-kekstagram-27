@@ -117,11 +117,10 @@
                 <fieldset class="img-upload__text text">
                   <div class="img-upload__field-wrapper img-upload__error-hashtags">
                     <input type="text" class="text__hashtags" name="hashtags" placeholder="#ХэшТег" minlength="2" maxlength="20"
-                    data-pristine-minlength-message="Минимальная длина 2 символа"
-                    data-pristine-maxlength-message="Максимальная длина 20 символов">
+                    data-pristine-minlength-message="От 2 до 20 символов">
                   </div>
-                  <div class="img-upload__field-wrapper">
-                    <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140"></textarea>
+                  <div class="img-upload__field-wrapper img-upload__error-hashtags">
+                    <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140" data-pristine-minlength-message="Не более 140 символов"></textarea>
                   </div>
                 </fieldset>
 
