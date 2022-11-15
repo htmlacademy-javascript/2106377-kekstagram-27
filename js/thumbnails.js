@@ -14,7 +14,8 @@
 // </template> */
 
 import{createSimilarDescPhoto} from './create-photos.js';
-import{COMMENT_COUNT} from './create-comments.js';
+import{drawFullPhoto} from './full-photo.js';
+
 // контейнер для изображений др пользователей
 const containerUsersPhoto = document.querySelector('.pictures');
 // нахожу шаблон
@@ -31,7 +32,8 @@ similarPhoto.forEach ((desc) => {
   // элементы шаблона для подстановки значений из массива
   photoElement.querySelector('.picture__img').src = desc.url;// Адрес изображения url подставьте как атрибут src изображения.
   photoElement.querySelector('.picture__likes').textContent = desc.likes;// Количество лайков likes выведите в блок .picture__likes.
-  photoElement.querySelector('.picture__comments').textContent = COMMENT_COUNT;// Количество комментариев comments выведите в блок .picture__comments.
+  photoElement.querySelector('.picture__comments').textContent = desc.comments.length; // Количество комментариев comments выведите в блок .picture__comments.
+  photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
   // добавляю клоннированный элемент во фрагмент
   similarPhotoFragment.append(photoElement);
 });

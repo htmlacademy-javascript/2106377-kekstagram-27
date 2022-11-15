@@ -57,5 +57,4 @@ const createDescPhoto = (k) => ({
 
 const createSimilarDescPhoto = () => Array.from({length: OBJECT_COUNT}, () => createDescPhoto(1));
 
-
 export{createSimilarDescPhoto};
