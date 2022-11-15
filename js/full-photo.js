@@ -56,7 +56,6 @@ const drawFullPhoto = (desc, evt) => {
     similarCommentFragment.append(itemElement);
   });
   commentList.append(similarCommentFragment);
-  console.log(desc.comments);
 };
 
 // Список комментариев под фотографией: в блок .social__comments.
