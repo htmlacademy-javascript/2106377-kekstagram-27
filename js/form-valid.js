@@ -26,12 +26,6 @@ const pristine = new Pristine(newImageForm, {
   errorTextParent: 'img-upload__error-hashtags',
   errorTextTag: 'span',
   errorTextClass: 'img-upload__error-text',
-  // classTo: 'img-upload__error-comment',
-  // errorClass: 'img-upload__error-comment--invalid',
-  // successClass: 'img-upload__error-comment--valid',
-  // errorTextParent: 'img-upload__error-comment',
-  // errorTextTag: 'span',
-  // errorTextClass: 'img-upload__error-text',
 });
 
 function validateHashtags (value) {
@@ -43,7 +37,7 @@ function validateHashtags (value) {
       // console.log('не верно!');
     }
   }
-  return value.length >= 2 && value.length <= 20;
+  return (value.length >= 2 && value.length <= 20);
 }
 
 pristine.addValidator(//валидация поля хештегов
