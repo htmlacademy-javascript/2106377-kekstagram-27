@@ -36,11 +36,11 @@ const pristine = new Pristine(newImageForm, {
 
 function validateHashtags (value) {
   const hashtagsArr = hashtagsField.value.split([' '], [5]);
-  console.log(hashtagsArr);
+  // console.log(hashtagsArr);
   for(let i = 0; i < hashtagsArr.length; i++) {
     const regexp = /^#[a-zа-яё]{1,19}\s$/i;
     if (regexp.test(hashtagsArr[i]) === false) {
-      console.log('не верно!');
+      // console.log('не верно!');
     }
   }
   return value.length >= 2 && value.length <= 20;
