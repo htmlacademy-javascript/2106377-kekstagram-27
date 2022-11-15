@@ -26,9 +26,23 @@ const pristine = new Pristine(newImageForm, {
   errorTextParent: 'img-upload__error-hashtags',
   errorTextTag: 'span',
   errorTextClass: 'img-upload__error-text',
+  // classTo: 'img-upload__error-comment',
+  // errorClass: 'img-upload__error-comment--invalid',
+  // successClass: 'img-upload__error-comment--valid',
+  // errorTextParent: 'img-upload__error-comment',
+  // errorTextTag: 'span',
+  // errorTextClass: 'img-upload__error-text',
 });
 
 function validateHashtags (value) {
+  const hashtagsArr = hashtagsField.value.split([' '], [5]);
+  // console.log(hashtagsArr);
+  for(let i = 0; i < hashtagsArr.length; i++) {
+    const regexp = /^#[a-zа-яё]{1,19}\s$/i;
+    if (regexp.test(hashtagsArr[i]) === false) {
+      // console.log('не верно!');
+    }
+  }
   return value.length >= 2 && value.length <= 20;
 }
 
@@ -51,44 +65,39 @@ newImageForm.addEventListener ('submit', (evt) => {
 });
 
 function validateComments (value) {
-  return value.length < 140;
+  return value.length === 140;
 }
 
 pristine.addValidator(//валидация поля коментов
   commentField,
   validateComments,
-  // 'Не более 140 символов'
+  'Не более 140 символов'
 );
 
 
-newImageForm.addEventListener ('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-  // const isValid = pristin.validate ();
-  // if (isValid) {
-  //   console.log('Форма заполнена верно');
-  // } else {
-  //   console.log('Форма заполнена не верно');
-  // }
-});
-
 // блокировка кнопки отправки
 hashtagsField.addEventListener ('input', () => {
-  if (hashtagsField.value.length >= 20) {
+  // const hashtagsArr = hashtagsField.value.split([' '], [5]);
+  // console.log(hashtagsArr);
+  // for(let i = 0; i < hashtagsArr.length; i++) {
+  //   const regexp = /^#[a-zа-яё]{1,19}$/i;
+  //   console.log( regexp.test(hashtagsArr) );
+  // }
+  if (hashtagsField.value.length === 20) {
     buttonSubmit.disabled = true;
     // buttonSubmit.setAttribute ('disabled',true)- или так
   }
 });
 
 commentField.addEventListener ('input', () => {
-  if (commentField.value.length >= 140) {
+  if (commentField.value.length === 140) {
     buttonSubmit.disabled = true;
     // buttonSubmit.setAttribute ('disabled',true)- или так
   }
 });
 
-// if (hashtagsField.value = /^#[a-zа-яё]{1,19}\s$/i)
-
-// // console.log(hashtag.test ('#hello'));
-// console.log(hashtag.test (hashtags.value));
-// слушатель input - функция проверки хэштегов и комментов
+// const hashtagsArr = hashtagsField.value.split([' '], [5]);
+// console.log(hashtagsArr);
+// hashtagsArr.forEach(() => {
+//   /^#[a-zа-яё]{1,19}$/i.test(hashtagsArr);
+// });

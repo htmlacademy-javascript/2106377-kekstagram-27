@@ -1,4 +1,4 @@
-const COMMENT_COUNT = 5;
+const COMMENT_COUNT = 15;
 const AVATAR_COUNT = 6;
 
 let c = 0;

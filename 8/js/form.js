@@ -95,3 +95,52 @@ document.addEventListener ('keydown', (evt) => {
     }
   }
 });
+
+
+// С помощью библиотеки noUiSlider (/vendor/nouislider) реализуйте применение эффекта для изображения.
+//Кроме визуального применения эффекта необходимо записывать значение в скрытое поле для дальнейшей отправки на сервер. ?????
+
+// Интенсивность эффекта регулируется перемещением ползунка в слайдере.
+// Слайдер реализуется сторонней библиотекой для реализации слайдеров noUiSlider.
+// Уровень эффекта записывается в поле .effect-level__value.
+// При изменении уровня интенсивности эффекта (предоставляется API слайдера), CSS-стили картинки внутри .img-upload__preview
+// обновляются следующим образом:
+// 		Для эффекта «Хром»— filter: grayscale(0..1) с шагом 0.1;
+// 		Для эффекта «Сепия»— filter: sepia(0..1) с шагом 0.1;
+// 		Для эффекта «Марвин»— filter: invert(0..100%) с шагом 1%;
+// 		Для эффекта «Фобос»— filter: blur(0..3px) с шагом 0.1px;
+// 		Для эффекта «Зной»— filter: brightness(1..3) с шагом 0.1;
+// 		Для эффекта «Оригинал» CSS-стили filter удаляются.
+// 		При выборе эффекта «Оригинал» слайдер скрывается.
+// 		При переключении эффектов, уровень насыщенности сбрасывается доначального значения (100%):
+//    слайдер, CSS-стиль изображения изначение поля должны обновляться.
+const sliderEffect = document.querySelector('.effect-level__slider');//div слайдера
+const inputEffectValue = document.querySelector('.effect-level__value');// поле значения уровня эффекта
+
+inputEffectValue.value = 0;
+const radio = document.querySelector('input[type="radio"]');
+
+noUiSlider.create(sliderEffect, {
+  range: {
+    min: 0,
+    max: 100,
+  },
+  start: 0,
+  step: 1,
+});
+
+sliderEffect.noUiSlider.on('update', () => {
+  inputEffectValue.value = sliderEffect.noUiSlider.get();//в value поля ввода -актуальное значение слайдера noUiSlider.get()
+});
+radio.addEventListener('change', (evt) => {
+  if (evt.target.checked) {
+    sliderEffect.noUiSlider.updateOptions({
+      range: {
+        min: 0,
+        max: 1
+      },
+      start: 0,
+      step: 0.1
+    });
+  }
+});
