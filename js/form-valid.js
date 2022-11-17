@@ -25,7 +25,7 @@ const pristine = new Pristine(newImageForm, {
   errorClass: 'img-upload__error-hashtags--invalid',
   successClass: 'img-upload__error-hashtags--valid',
   errorTextParent: 'img-upload__error-hashtags',
-  errorTextTag: 'span',
+  errorTextTag: 'div',
   errorTextClass: 'img-upload__error-text',
 });
 
@@ -42,7 +42,7 @@ pristine.addValidator(
 let hashtagsArr = [];
 
 const regexp = /^#[a-zа-яё]{1,19}$/i;
-const errorMessageHashtags = document.createElement('span');//елемент с сообщением о верном заполнении
+const errorMessageHashtags = document.createElement('div');//елемент с сообщением о верном заполнении
 hashtagsWrapper.append(errorMessageHashtags);
 errorMessageHashtags.classList.add('img-upload__error-reg');
 
@@ -52,7 +52,7 @@ hashtagsField.addEventListener ('blur', () => {
   for(let i = 0; i < hashtagsArr.length; i++) {
     if (regexp.test(hashtagsArr[i]) === false) {
       errorMessageHashtags.textContent = 'только буквы и числа, хэштеги разделяются пробелом, не повторяются, не более 5 хэштегов';
-      hashtagsField.focus();// сохраняет фокус до тех пор пока введеное значение не станет true
+      // hashtagsField.focus();// сохраняет фокус до тех пор пока введеное значение не станет true
     }
   }
 });

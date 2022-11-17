@@ -21,8 +21,12 @@
 
 import{viewPhotoNoScroll} from './full-photo.js';
 const uploadingImage = document.querySelector('.img-upload__overlay');//форма редактирования изображения
-uploadingImage.classList.remove('hidden');
-viewPhotoNoScroll.classList.add('modal-open');
+const inputUploadingImage = document.querySelector('#upload-file'); //input для загрузки изображения и формы
+inputUploadingImage.addEventListener('click',(evt) => {
+  evt.preventDefault();
+  uploadingImage.classList.remove('hidden');
+  viewPhotoNoScroll.classList.add('modal-open');
+});
 
 // Масштаб:
 // +  При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
