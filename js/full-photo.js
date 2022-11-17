@@ -26,7 +26,8 @@ const descFullPhoto = document.querySelector('.social__caption');//блок оп
 
 // контейнер
 const commentList = document.querySelector('.social__comments');// ul блок для комментариев
-const commentListItem = commentList.querySelectorAll('.social__comment');//li
+// const commentListItem = commentList.querySelectorAll('.social__comment');//li
+const commentListItem = commentList.children;
 
 //используя объект desc отрисовываем комменты, количество лайков и так далее, количество комментов desc.comments.length
 const drawFullPhoto = (desc, evt) => {
@@ -51,41 +52,36 @@ const drawFullPhoto = (desc, evt) => {
     // добавляю клоннированный элемент во фрагмент
     similarCommentFragment.append(itemElement);
   });
-
-  for (let i = 0; i < commentListItem.length; i++ ) {
-    commentList.removeChild(commentListItem[i]);
-  }
+  commentList.innerHTML = '';
   commentList.append(similarCommentFragment);
-  // console.log(commentList);
+
+  for (let i = 5; i < commentListItem.length; i ++) {
+    commentListItem[i].classList.add('hidden');
+  }
 };
 
 // Список комментариев под фотографией: в блок .social__comments.
 // Разметка :
-// <li class="social__comment">
+// {/* <li class="social__comment">
 //     <img
 //         class="social__picture"
 //         src="{{аватар}}"
 //         alt="{{имя комментатора}}"
 //         width="35" height="35">
 //     <p class="social__text">{{текст комментария}}</p>
-// </li>
+// </li> */}
 
 //2. доработайте код по выводу списка комментариев таким образом, чтобы список показывался не полностью,
 // а по 5 элементов, и следующие 5 элементов добавлялись бы по нажатию на кнопку «Загрузить ещё».
 
 const buttonCommentsLoader = document.querySelector('.social__comments-loader');//кнопка «Загрузить ещё»
-// commentCounter -блок числа коментаривиев
-//commentListItem -li
 
-// const newcommentListItem = commentList.querySelectorAll('.social__comment');//li новый список
-// console.log(newcommentListItem);
-
-// for (let i = 5; i < commentListItem.length; i ++) {
-//   commentListItem[i].classList.add('hidden');
-// }
-
-buttonCommentsLoader.addEventListener('click', () => {
+buttonCommentsLoader.addEventListener('click', (evt) => {
+  evt.preventDefault();
   commentCounter.textContent = `${parseInt(commentCounter.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`;
+  // for (let i = 5; i < commentListItem[i] + 10; i ++) {
+  //   commentListItem[i].classList.remove('hidden');
+  // }
 });
 
 //+ Не забудьте реализовать обновление числа показанных комментариев в блоке .social__comment-count.
@@ -118,6 +114,7 @@ document.addEventListener ('keydown', (evt) => {
     newCommentLoad.classList.remove('hidden');
   }
 });
+
 export{viewPhotoNoScroll};
 export{drawFullPhoto};
 
