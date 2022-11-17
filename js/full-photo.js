@@ -28,11 +28,6 @@ const descFullPhoto = document.querySelector('.social__caption');//блок оп
 const commentList = document.querySelector('.social__comments');// ul блок для комментариев
 const commentListItem = commentList.querySelectorAll('.social__comment');//li
 
-// удаляю эллемент
-for (let i = 0; i < commentListItem.length; i++ ) {
-  commentList.removeChild(commentListItem[i]);
-}
-
 //используя объект desc отрисовываем комменты, количество лайков и так далее, количество комментов desc.comments.length
 const drawFullPhoto = (desc, evt) => {
   evt.preventDefault();
@@ -44,6 +39,7 @@ const drawFullPhoto = (desc, evt) => {
   descFullPhoto.textContent = desc.description;
   // commentCounter.classList.add('hidden');
   // newCommentLoad.classList.add('hidden');
+  // удаляю эллемент
   const similarCommentFragment = document.createDocumentFragment ();
   desc.comments.forEach ((content) => {
     // клонирую
@@ -55,7 +51,12 @@ const drawFullPhoto = (desc, evt) => {
     // добавляю клоннированный элемент во фрагмент
     similarCommentFragment.append(itemElement);
   });
+
+  for (let i = 0; i < commentListItem.length; i++ ) {
+    commentList.removeChild(commentListItem[i]);
+  }
   commentList.append(similarCommentFragment);
+  console.log(commentList);
 };
 
 // Список комментариев под фотографией: в блок .social__comments.

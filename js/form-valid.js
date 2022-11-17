@@ -11,8 +11,9 @@
 // по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
 // Если хотя бы один из тегов не проходит нужных проверок, показывать сообщение об ошибке.
 
-// Поля, не перечисленные в техзадании, но существующие в разметке, особой валидации не требуют.
+
 const newImageForm = document.querySelector('.img-upload__form');//форма загрузки фото
+const hashtagsWrapper = newImageForm.querySelector ('.img-upload__field-wrapper');//div-родитель для поля хэштегов
 const hashtagsField = newImageForm.querySelector('.text__hashtags');//поле загрузки хештега
 
 const commentField = document.querySelector('.text__description');//поле ввода коммен-я
@@ -29,54 +30,50 @@ const pristine = new Pristine(newImageForm, {
 });
 
 function validateHashtags (value) {
-  const hashtagsArr = hashtagsField.value.split([' '], [5]);
-  // console.log(hashtagsArr);
-  for(let i = 0; i < hashtagsArr.length; i++) {
-    const regexp = /^#[a-zа-яё]{1,19}\s$/i;
-    if (regexp.test(hashtagsArr[i]) === false) {
-      // console.log('не верно!');
-    }
-  }
   return (value.length >= 2 && value.length <= 20);
 }
-
-pristine.addValidator(//валидация поля хештегов
-  hashtagsField,
-  validateHashtags,
-  // 'От 2 до 20 символов'
+//валидация поля хештегов
+pristine.addValidator(
+  hashtagsField,//поле проверки
+  validateHashtags, //функция проверки
 );
 
+//проверка поля хэштегов по регулярному выражению
+let hashtagsArr = [];
 
-newImageForm.addEventListener ('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-  // const isValid = pristin.validate ();
-  // if (isValid) {
-  //   console.log('Форма заполнена верно');
-  // } else {
-  //   console.log('Форма заполнена не верно');
-  // }
+const regexp = /^#[a-zа-яё]{1,19}$/i;
+const errorMessageHashtags = document.createElement('span');//елемент с сообщением о верном заполнении
+hashtagsWrapper.append(errorMessageHashtags);
+errorMessageHashtags.classList.add('img-upload__error-reg');
+
+//проверка при потере фокуса
+hashtagsField.addEventListener ('blur', () => {
+  hashtagsArr = hashtagsField.value.split([' '], [5]);
+  for(let i = 0; i < hashtagsArr.length; i++) {
+    if (regexp.test(hashtagsArr[i]) === false) {
+      errorMessageHashtags.textContent = 'только буквы и числа, хэштеги разделяются пробелом, не повторяются, не более 5 хэштегов';
+      hashtagsField.focus();// сохраняет фокус до тех пор пока введеное значение не станет true
+    }
+  }
 });
 
 function validateComments (value) {
   return value.length === 140;
 }
-
-pristine.addValidator(//валидация поля коментов
+//валидация поля коментов
+pristine.addValidator(
   commentField,
   validateComments,
   'Не более 140 символов'
 );
 
+newImageForm.addEventListener ('submit', (evt) => {
+  evt.preventDefault();
+  pristine.validate();
+});
 
 // блокировка кнопки отправки
 hashtagsField.addEventListener ('input', () => {
-  // const hashtagsArr = hashtagsField.value.split([' '], [5]);
-  // console.log(hashtagsArr);
-  // for(let i = 0; i < hashtagsArr.length; i++) {
-  //   const regexp = /^#[a-zа-яё]{1,19}$/i;
-  //   console.log( regexp.test(hashtagsArr) );
-  // }
   if (hashtagsField.value.length === 20) {
     buttonSubmit.disabled = true;
     // buttonSubmit.setAttribute ('disabled',true)- или так
@@ -89,9 +86,3 @@ commentField.addEventListener ('input', () => {
     // buttonSubmit.setAttribute ('disabled',true)- или так
   }
 });
-
-// const hashtagsArr = hashtagsField.value.split([' '], [5]);
-// console.log(hashtagsArr);
-// hashtagsArr.forEach(() => {
-//   /^#[a-zа-яё]{1,19}$/i.test(hashtagsArr);
-// });

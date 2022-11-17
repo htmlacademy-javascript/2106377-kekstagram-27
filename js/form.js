@@ -95,14 +95,19 @@ document.addEventListener ('keydown', (evt) => {
 // Уровень эффекта записывается в поле .effect-level__value.
 // При изменении уровня интенсивности эффекта (предоставляется API слайдера), CSS-стили картинки внутри .img-upload__preview
 // обновляются
+
 // 		Для эффекта «Оригинал» CSS-стили filter удаляются.
 // 		При выборе эффекта «Оригинал» слайдер скрывается.
+
 // 		При переключении эффектов, уровень насыщенности сбрасывается доначального значения (100%):
 //    слайдер, CSS-стиль изображения изначение поля должны обновляться.
 const sliderEffects = document.querySelector('.effect-level__slider');//div слайдера
+sliderEffects.classList.add('hidden');
 const inputEffectValue = document.querySelector('.effect-level__value');// input - поле значения уровня эффекта
 // const fieldsetEffectLevel = document.querySelector('.effect-level');//fieldset изменение глубины эффекта
-const effectsFieldset = document.querySelector('.effects');// fieldset наложение эффекта на изображение
+// const effectsFieldset = document.querySelector('.effects');// fieldset наложение эффекта на изображение effects__list
+const effectsList = document.querySelector('.effects__list');//  ul    effects__list
+
 
 inputEffectValue.value = 0;//начальное значение в поле ввода
 const radio = document.querySelector('input[type="radio"]');
@@ -111,22 +116,34 @@ const radio = document.querySelector('input[type="radio"]');
 noUiSlider.create(sliderEffects, {
   range: {
     min: 0,
-    max: 100,
+    max: 1,
   },
   start: 0,
-  step: 1,
+  step: 0.1,
   connect: 'lower',
+  format: {
+    to: function (value) {
+      return value;
+    },
+    from: function (value) {
+      return parseFloat(value);
+    },
+  },
 });
 
 sliderEffects.noUiSlider.on('update', () => {
   inputEffectValue.value = sliderEffects.noUiSlider.get();//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
 });
+
 function onEffectChange (evt) {
   if (evt.target.checked) {
     uploadPreviewImg.classList = `effects__preview--${evt.target.value}`;
+    sliderEffects.classList.remove('hidden');
+    if(radio.value === 'none') {//Для  оригинала фильтр уддаляется
+      uploadPreviewImg.style.filter = null;
+    }
     if(radio.value === 'chrome') {//Для эффекта «Хром»— filter: grayscale(0..1) с шагом 0.1
-      // uploadPreviewImg.style.filter = grayscale('inputEffectValue.value');
-      // uploadPreviewImg.style = `filter: grayscale(inputEffectValue.value)`;
+      uploadPreviewImg.style = `filter: grayscale(${parseInt(inputEffectValue.value, 10)})`;
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
@@ -137,7 +154,7 @@ function onEffectChange (evt) {
       });
     }
     if(radio.value === 'sepia') {//Для эффекта «Сепия»— filter: sepia(0..1) с шагом 0.1;
-      uploadPreviewImg.style = 'filter: grayscale(0..1)';
+      uploadPreviewImg.style = `filter: sepia(${parseInt(inputEffectValue.value, 10)})`;
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
@@ -148,29 +165,45 @@ function onEffectChange (evt) {
       });
     }
     if(radio.value === 'marvin') {//Для эффекта «Марвин»— filter: invert(0..100%) с шагом 1%;
-      uploadPreviewImg.style = 'filter: grayscale(0..1)';
+      uploadPreviewImg.style = `filter: invert(${parseInt(inputEffectValue.value, 10)})`;
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
           max: 100
         },
         start: 0,
-        step: 1
+        step: 1,
+        format: {
+          to: function (value) {
+            return `${String(value)}%`;
+          },
+          from: function (value) {
+            return parseFloat(value);
+          },
+        },
       });
     }
     if(radio.value === 'phobos') {//Для эффекта «Фобос»— filter: blur(0..3px) с шагом 0.1px;
-      uploadPreviewImg.style = 'filter: grayscale(0..1)';
+      uploadPreviewImg.style = `filter: blur(${parseInt(inputEffectValue.value, 10)})`;
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
           max: 3
         },
         start: 0,
-        step: 0.1
+        step: 0.1,
+        format: {
+          to: function (value) {
+            return `${String(value)}px`;
+          },
+          from: function (value) {
+            return parseFloat(value);
+          },
+        },
       });
     }
     if(radio.value === 'heat') {//Для эффекта «Зной»— filter: brightness(1..3) с шагом 0.1;
-      uploadPreviewImg.style = 'filter: grayscale(0..1)';
+      uploadPreviewImg.style = `filter: brightness(${parseInt(inputEffectValue.value, 10)})`;
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
@@ -182,5 +215,6 @@ function onEffectChange (evt) {
     }
   }
 }
+
 //делегирование
-effectsFieldset.addEventListener ('change', onEffectChange);
+effectsList.addEventListener ('change', onEffectChange);
