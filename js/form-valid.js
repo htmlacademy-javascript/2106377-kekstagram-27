@@ -77,6 +77,8 @@ hashtagsField.addEventListener ('input', () => {
   if (hashtagsField.value.length === 21) {
     buttonSubmit.disabled = true;
     // buttonSubmit.setAttribute ('disabled',true)- или так
+  } else {
+    buttonSubmit.disabled = false;
   }
 });
 
