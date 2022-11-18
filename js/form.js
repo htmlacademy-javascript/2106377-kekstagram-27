@@ -22,6 +22,9 @@
 import{viewPhotoNoScroll} from './full-photo.js';
 const uploadingImage = document.querySelector('.img-upload__overlay');//форма редактирования изображения
 const inputUploadingImage = document.querySelector('#upload-file'); //input для загрузки изображения и формы
+// Выбор изображения для загрузки осуществляется с помощью стандартного контрола загрузки файла #upload-file, который стилизован под букву «О» в логотипе.
+// После выбора изображения (изменения значения поля #upload-file), показывается форма редактирования изображения.
+// У элемента .img-upload__overlay удаляется класс hidden, а body задаётся класс modal-open.
 inputUploadingImage.addEventListener('click',(evt) => {
   evt.preventDefault();
   uploadingImage.classList.remove('hidden');

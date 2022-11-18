@@ -58,7 +58,7 @@ hashtagsField.addEventListener ('blur', () => {
 });
 
 function validateComments (value) {
-  return value.length === 140;
+  return value.length < 141;
 }
 //валидация поля коментов
 pristine.addValidator(
@@ -74,7 +74,7 @@ newImageForm.addEventListener ('submit', (evt) => {
 
 // блокировка кнопки отправки
 hashtagsField.addEventListener ('input', () => {
-  if (hashtagsField.value.length === 20) {
+  if (hashtagsField.value.length === 21) {
     buttonSubmit.disabled = true;
     // buttonSubmit.setAttribute ('disabled',true)- или так
   }
@@ -84,5 +84,7 @@ commentField.addEventListener ('input', () => {
   if (commentField.value.length === 140) {
     buttonSubmit.disabled = true;
     // buttonSubmit.setAttribute ('disabled',true)- или так
+  } else {
+    buttonSubmit.disabled = false;
   }
 });
