@@ -29,36 +29,46 @@ const pristine = new Pristine(newImageForm, {
   errorTextClass: 'img-upload__error-text',
 });
 
+//проверка поля хэштегов по регулярному выражению
+let hashtagsArr = [];
+
+const regexp = /^#[a-zа-яё]{1,19}$/i;
+const errorMessageHashtags = document.createElement('div');//элемент с сообщением о верном заполнении
+
 function validateHashtags (value) {
-  return (value.length >= 2 && value.length <= 20);
+  hashtagsArr = hashtagsField.value.split([' '],);
+  hashtagsWrapper.append(errorMessageHashtags);
+  if (hashtagsArr.length > 5) {
+    errorMessageHashtags.textContent = 'не более 5 хэштегов';
+    buttonSubmit.disabled = true;
+  }
+  for(let i = 0; i < hashtagsArr.length; i++) {
+    if (regexp.test(hashtagsArr[i]) === false) {
+      errorMessageHashtags.textContent = 'только буквы и числа, хэштеги разделяются пробелом';
+      buttonSubmit.disabled = true;
+    } else {
+      buttonSubmit.disabled = false;
+    }
+    if (hashtagsArr[i].length > 20) {
+      hashtagsWrapper.append(errorMessageHashtags);
+      errorMessageHashtags.textContent = 'хештег не более 20 символов';
+      buttonSubmit.disabled = true;
+    } else {
+      buttonSubmit.disabled = false;
+    }
+  }
+  return (value.length >= 2);
 }
+
 //валидация поля хештегов
 pristine.addValidator(
   hashtagsField,//поле проверки
   validateHashtags, //функция проверки
 );
 
-//проверка поля хэштегов по регулярному выражению
-let hashtagsArr = [];
-
-const regexp = /^#[a-zа-яё]{1,19}$/i;
-const errorMessageHashtags = document.createElement('div');//елемент с сообщением о верном заполнении
-hashtagsWrapper.append(errorMessageHashtags);
-errorMessageHashtags.classList.add('img-upload__error-reg');
-
-//проверка при потере фокуса
-hashtagsField.addEventListener ('blur', () => {
-  hashtagsArr = hashtagsField.value.split([' '], [5]);
-  for(let i = 0; i < hashtagsArr.length; i++) {
-    if (regexp.test(hashtagsArr[i]) === false) {
-      errorMessageHashtags.textContent = 'только буквы и числа, хэштеги разделяются пробелом, не повторяются, не более 5 хэштегов';
-      // hashtagsField.focus();// сохраняет фокус до тех пор пока введеное значение не станет true
-    }
-  }
-});
-
+//комменты
 function validateComments (value) {
-  return value.length < 141;
+  return value.length === 140;
 }
 //валидация поля коментов
 pristine.addValidator(
@@ -73,14 +83,14 @@ newImageForm.addEventListener ('submit', (evt) => {
 });
 
 // блокировка кнопки отправки
-hashtagsField.addEventListener ('input', () => {
-  if (hashtagsField.value.length === 21) {
-    buttonSubmit.disabled = true;
-    // buttonSubmit.setAttribute ('disabled',true)- или так
-  } else {
-    buttonSubmit.disabled = false;
-  }
-});
+// hashtagsField.addEventListener ('input', () => {
+//   if (hashtagsField.value.length === 21) {
+//     buttonSubmit.disabled = true;
+//     // buttonSubmit.setAttribute ('disabled',true)- или так
+//   } else {
+//     buttonSubmit.disabled = false;
+//   }
+// });
 
 commentField.addEventListener ('input', () => {
   if (commentField.value.length === 140) {
@@ -90,3 +100,7 @@ commentField.addEventListener ('input', () => {
     buttonSubmit.disabled = false;
   }
 });
+
+// buttonSubmit.addEventListener('submit', () =>{
+
+// });
