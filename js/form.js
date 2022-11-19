@@ -13,65 +13,45 @@
 // Например, всем обязательным полям нужно добавить атрибут required.
 // Затем проверьте, правильные ли типы стоят у нужных полей, если нет — проставьте правильные.
 
-// 4. Изучите, что значит загрузка изображения, и как, когда и каким образом показывается форма редактирования изображения.
+// + 4. Изучите, что значит загрузка изображения, и как, когда и каким образом показывается форма редактирования изображения.
 // Напишите код и добавьте необходимые обработчики для реализации этого пункта техзадания.
 // В работе вы можете опираться на код показа окна с полноразмерной фотографией
-// !! Важно. Подстановка выбранного изображения в форму — это отдельная домашняя работа.
-// В данном задании этот пункт реализовывать не нужно.
-
+// !! Важно. Подстановка выбранного изображения в форму — это отдельная домашняя работа.В данном задании этот пункт реализовывать не нужно.
 // У элемента .img-upload__overlay удаляется класс hidden, а body задаётся класс modal-open.
 
-// import{viewPhotoNoScroll} from './full-photo.js';
-// const uploadingImage = document.querySelector('.img-upload__overlay');//форма редактирования изображения
-// uploadingImage.classList.remove('hidden');
-// viewPhotoNoScroll.classList.add('modal-open');
+import{viewPhotoNoScroll} from './full-photo.js';
+const uploadingImage = document.querySelector('.img-upload__overlay');//форма редактирования изображения
+const inputUploadingImage = document.querySelector('#upload-file'); //input для загрузки изображения и формы
+// Выбор изображения для загрузки осуществляется с помощью стандартного контрола загрузки файла #upload-file, который стилизован под букву «О» в логотипе.
+// После выбора изображения (изменения значения поля #upload-file), показывается форма редактирования изображения.
+// У элемента .img-upload__overlay удаляется класс hidden, а body задаётся класс modal-open.
+inputUploadingImage.addEventListener('click',() => {
+  uploadingImage.classList.remove('hidden');
+  viewPhotoNoScroll.classList.add('modal-open');
+});
 
 // Масштаб:
-//+  При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
-// +- При изменении значения поля .scale__control--value изображению внутри .img-upload__preview должен добавляться
+// +  При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
+// + При изменении значения поля .scale__control--value изображению внутри .img-upload__preview должен добавляться
 // соответствующий стиль CSS, который с помощью трансформации scale задаёт масштаб.
 // Например, если в поле стоит значение 75%, то в стиле изображения должно быть написано transform: scale(0.75).
 
-// const buttonSmaller = document.querySelector('.scale__control--smaller');
-// const buttonBigger = document.querySelector('.scale__control--bigger');
-// const inputScaleValue = document.querySelector('.scale__control--value');//размер изображения
-// buttonSmaller.addEventListener ('click', () => {
-//   inputScaleValue.value = (parseInt(inputScaleValue.value, 10) - 25) + '%';
-// });
+const buttonSmaller = document.querySelector('.scale__control--smaller');// кнопка регулирования -
+const buttonBigger = document.querySelector('.scale__control--bigger');// кнопка регулирования +
+const inputScaleValue = document.querySelector('.scale__control--value');//размер изображения
 
-// buttonBigger.addEventListener ('click', () => {
-//   inputScaleValue.value = (parseInt(inputScaleValue.value, 10) + 25) + '%';
-// });
-// При изменении значения поля .scale__control--value изображению внутри .img-upload__preview должен добавляться
-// // соответствующий стиль CSS
-// const uploadPreview = document.querySelector('.img-upload__preview');
-// const uploadPreviewImg = uploadPreview.querySelector('img'); //картинка внутри .img-upload__preview
+const uploadPreviewContainer = document.querySelector('.img-upload__preview');
+const uploadPreviewImg = uploadPreviewContainer.querySelector('img'); //картинка внутри .img-upload__preview
 
-// uploadPreviewImg.style.transform.scale = (0.75); !!не понятно
-// uploadPreviewImg.style.transform = scale (0.75); !!не понятно
+buttonSmaller.addEventListener ('click', () => {
+  inputScaleValue.value = `${parseInt(inputScaleValue.value, 10) - 25}%`;
+  uploadPreviewImg.style = `transform: scale(${parseInt(inputScaleValue.value, 10) / 100})`;
+});
 
-// Эффект:
-// При смене эффекта, выбором одного из значений среди радиокнопок .effects__radio, добавить картинке внутри .img-upload__preview
-// CSS-класс, соответствующий эффекту. Например, если выбран эффект .effect-chrome, изображению нужно добавить класс effects__preview--chrome.
-// .effects__preview--sepia
-// .effects__preview--marvin
-// .effects__preview--phobos
-// .effects__preview--heat
-
-// const effectsList = document.querySelector('.effects__list');//список
-// const effectsListItem = effectsList.querySelectorAll('.effects__item'); //li все
-
-// const addCheckHandler = function (item) {
-//   const radio = item.querySelector('.effects__radio');
-//   radio.addEventListener('change', () => {
-//     // console.log('получилось');
-//     uploadPreviewImg.classList.add('effects__preview--chrome');
-//   });
-// };
-
-// for (let i = 0; i < effectsListItem.length; i++) {
-//   addCheckHandler(effectsListItem[i]);
-// }
+buttonBigger.addEventListener ('click', () => {
+  inputScaleValue.value = `${parseInt(inputScaleValue.value, 10) + 25}%`;
+  uploadPreviewImg.style = `transform: scale(${parseInt(inputScaleValue.value, 10) / 100})`;
+});
 
 // + 5. После реализуйте закрытие формы.
 // !! Обратите внимание
@@ -85,41 +65,162 @@
 //+  либо нажатием клавиши Esc.
 //+  Элементу .img-upload__overlay возвращается  hidden. У элемента body удаляется  modal-open.
 
-// const buttonUploadingCancel = document.querySelector('#upload-cancel');//Кнопка для закрытия формы
-// buttonUploadingCancel.addEventListener (('click'), () => {
-//   uploadingImage.classList.add('hidden');
-//   viewPhotoNoScroll.classList.remove('modal-open');
-//   const inputUploadFile = document.querySelector('#upload-file');//поле загрузки изображения
-//   inputUploadFile.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
-//   inputScaleValue.value = '100%';// сброс размер изображения
-// });
+const buttonUploadingCancel = document.querySelector('#upload-cancel');//Кнопка [Х] для закрытия формы
+buttonUploadingCancel.addEventListener (('click'), () => {
+  uploadingImage.classList.add('hidden');
+  viewPhotoNoScroll.classList.remove('modal-open');
+  const inputUploadFile = document.querySelector('#upload-file');//поле загрузки изображения
+  inputUploadFile.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
+  inputScaleValue.value = '100%';// сброс размер изображения
+});
 
-// document.addEventListener ('keydown', (evt) => {
-//   if (evt.key === 'Escape') {
-//     uploadingImage.classList.add('hidden');
-//     viewPhotoNoScroll.classList.remove('modal-open');
-//   }
-// });
-
-// файл form-valid.js +-  6. Напишите код для валидации формы добавления изображения, используя библиотеку Pristine (/vendor/pristine).
-// Список полей для валидации:
-// +- Хэш-теги
-// --  Комментарий
-
-
-// 7. Реализуйте логику проверки так, чтобы, как минимум, она срабатывала при попытке отправить форму и не давала этого сделать,
-//  если форма заполнена не по правилам. При желании, реализуйте проверки сразу при вводе значения в поле.
-
-
-// Как отменить обработчик Esc при фокусе?
+// + Как отменить обработчик Esc при фокусе?
 // Задача не имеет одного верного решения, однако намекнём на самый простой — использовать stopPropagation для события нажатия
 // клавиш в поле при фокусе.
 
+document.addEventListener ('keydown', (evt) => {
+  if (evt.key === 'Escape') {
+    if (document.querySelector('.text__hashtags') === document.activeElement || document.querySelector('.text__description') === document.activeElement) {
+      evt.stopPropagation();
+    } else {
+      uploadingImage.classList.add('hidden');
+      viewPhotoNoScroll.classList.remove('modal-open');
+    }
+  }
+});
 
-// Валидация хеш-тегов?
-// Для валидации хэш-тегов вам придётся вспомнить, как работать с массивами. Набор хэш-тегов можно превратить в массив,
-// воспользовавшись методом .split(). Он разбивает строки на массивы. После этого, вы можете написать цикл, который будет ходить
-// по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
-// Если хотя бы один из тегов не проходит нужных проверок, показывать сообщение об ошибке.
+//МОДУЛЬ 9
+// С помощью библиотеки noUiSlider (/vendor/nouislider) реализуйте применение эффекта для изображения.
+//Кроме визуального применения эффекта необходимо записывать значение в скрытое поле для дальнейшей отправки на сервер. ?????
+// + Эффект:
+// При смене эффекта, выбором одного из значений среди радиокнопок .effects__radio, добавить картинке внутри .img-upload__preview
+// CSS-класс, соответствующий эффекту. Например, если выбран эффект .effect-chrome, изображению нужно добавить класс effects__preview--chrome.
 
-// Поля, не перечисленные в техзадании, но существующие в разметке, особой валидации не требуют.
+// Интенсивность эффекта регулируется перемещением ползунка в слайдере.
+// Слайдер реализуется сторонней библиотекой для реализации слайдеров noUiSlider.
+// Уровень эффекта записывается в поле .effect-level__value.
+// При изменении уровня интенсивности эффекта (предоставляется API слайдера), CSS-стили картинки внутри .img-upload__preview
+// обновляются
+
+// 		Для эффекта «Оригинал» CSS-стили filter удаляются.
+// 		При выборе эффекта «Оригинал» слайдер скрывается.
+
+// 		При переключении эффектов, уровень насыщенности сбрасывается доначального значения (100%):
+//    слайдер, CSS-стиль изображения изначение поля должны обновляться.
+const sliderEffects = document.querySelector('.effect-level__slider');//div слайдера
+sliderEffects.classList.add('hidden');
+const inputEffectValue = document.querySelector('.effect-level__value');// input - поле значения уровня эффекта
+// const fieldsetEffectLevel = document.querySelector('.effect-level');//fieldset изменение глубины эффекта
+// const effectsFieldset = document.querySelector('.effects');// fieldset наложение эффекта на изображение effects__list
+const effectsList = document.querySelector('.effects__list');//  ul    effects__list
+
+
+inputEffectValue.value = 0;//начальное значение в поле ввода
+const radio = document.querySelector('input[type="radio"]');
+
+//создаем слайдер с мин/макс значением шагом и начальной точкой
+noUiSlider.create(sliderEffects, {
+  range: {
+    min: 0,
+    max: 1,
+  },
+  start: 0,
+  step: 0.1,
+  connect: 'lower',
+  format: {
+    to: function (value) {
+      return value;
+    },
+    from: function (value) {
+      return parseFloat(value);
+    },
+  },
+});
+
+sliderEffects.noUiSlider.on('update', () => {
+  inputEffectValue.value = sliderEffects.noUiSlider.get();//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
+});
+
+function onEffectChange (evt) {
+  if (evt.target.checked) {
+    uploadPreviewImg.classList = `effects__preview--${evt.target.value}`;
+    sliderEffects.classList.remove('hidden');
+    if(radio.value === 'none') {//Для  оригинала фильтр уддаляется
+      uploadPreviewImg.style.filter = null;
+    }
+    if(radio.value === 'chrome') {//Для эффекта «Хром»— filter: grayscale(0..1) с шагом 0.1
+      uploadPreviewImg.style = `filter: grayscale(${parseInt(inputEffectValue.value, 10)})`;
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 1
+        },
+        start: 0,
+        step: 0.1
+      });
+    }
+    if(radio.value === 'sepia') {//Для эффекта «Сепия»— filter: sepia(0..1) с шагом 0.1;
+      uploadPreviewImg.style = `filter: sepia(${parseInt(inputEffectValue.value, 10)})`;
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 1
+        },
+        start: 0,
+        step: 0.1
+      });
+    }
+    if(radio.value === 'marvin') {//Для эффекта «Марвин»— filter: invert(0..100%) с шагом 1%;
+      uploadPreviewImg.style = `filter: invert(${parseInt(inputEffectValue.value, 10)})`;
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 100
+        },
+        start: 0,
+        step: 1,
+        format: {
+          to: function (value) {
+            return `${String(value)}%`;
+          },
+          from: function (value) {
+            return parseFloat(value);
+          },
+        },
+      });
+    }
+    if(radio.value === 'phobos') {//Для эффекта «Фобос»— filter: blur(0..3px) с шагом 0.1px;
+      uploadPreviewImg.style = `filter: blur(${parseInt(inputEffectValue.value, 10)})`;
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 3
+        },
+        start: 0,
+        step: 0.1,
+        format: {
+          to: function (value) {
+            return `${String(value)}px`;
+          },
+          from: function (value) {
+            return parseFloat(value);
+          },
+        },
+      });
+    }
+    if(radio.value === 'heat') {//Для эффекта «Зной»— filter: brightness(1..3) с шагом 0.1;
+      uploadPreviewImg.style = `filter: brightness(${parseInt(inputEffectValue.value, 10)})`;
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 3
+        },
+        start: 0,
+        step: 0.1
+      });
+    }
+  }
+}
+
+//делегирование
+effectsList.addEventListener ('change', onEffectChange);
