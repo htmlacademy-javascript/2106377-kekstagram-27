@@ -41,18 +41,20 @@ function validateHashtags (value) {
   if (hashtagsArr.length > 5) {
     errorMessageHashtags.textContent = 'не более 5 хэштегов';
     buttonSubmit.disabled = true;
+    return false;
   }
   for(let i = 0; i < hashtagsArr.length; i++) {
     if (regexp.test(hashtagsArr[i]) === false) {
       errorMessageHashtags.textContent = 'только буквы и числа, хэштеги разделяются пробелом';
       buttonSubmit.disabled = true;
+      return false;
     } else {
       buttonSubmit.disabled = false;
     }
     if (hashtagsArr[i].length > 20) {
-      hashtagsWrapper.append(errorMessageHashtags);
       errorMessageHashtags.textContent = 'хештег не более 20 символов';
       buttonSubmit.disabled = true;
+      return false;
     } else {
       buttonSubmit.disabled = false;
     }
@@ -68,7 +70,7 @@ pristine.addValidator(
 
 //комменты
 function validateComments (value) {
-  return value.length === 140;
+  return value.length < 140;
 }
 //валидация поля коментов
 pristine.addValidator(
@@ -80,17 +82,13 @@ pristine.addValidator(
 newImageForm.addEventListener ('submit', (evt) => {
   evt.preventDefault();
   pristine.validate();
+  if (!pristine.validate()){
+    // eslint-disable-next-line no-alert
+    alert('Форма заполненна не верно');
+    return false;
+  }
+  evt.target.submit();
 });
-
-// блокировка кнопки отправки
-// hashtagsField.addEventListener ('input', () => {
-//   if (hashtagsField.value.length === 21) {
-//     buttonSubmit.disabled = true;
-//     // buttonSubmit.setAttribute ('disabled',true)- или так
-//   } else {
-//     buttonSubmit.disabled = false;
-//   }
-// });
 
 commentField.addEventListener ('input', () => {
   if (commentField.value.length === 140) {
@@ -100,7 +98,3 @@ commentField.addEventListener ('input', () => {
     buttonSubmit.disabled = false;
   }
 });
-
-// buttonSubmit.addEventListener('submit', () =>{
-
-// });
