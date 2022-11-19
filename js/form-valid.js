@@ -36,12 +36,20 @@ const regexp = /^#[a-zа-яё]{1,19}$/i;
 const errorMessageHashtags = document.createElement('div');//элемент с сообщением о верном заполнении
 
 function validateHashtags (value) {
-  hashtagsArr = hashtagsField.value.split([' '],);
+  hashtagsArr = hashtagsField.value.split([' ']);
   hashtagsWrapper.append(errorMessageHashtags);
   if (hashtagsArr.length > 5) {
     errorMessageHashtags.textContent = 'не более 5 хэштегов';
     buttonSubmit.disabled = true;
     return false;
+  }
+
+  if (new Set(hashtagsArr).size !== hashtagsArr.length) {
+    errorMessageHashtags.textContent = 'хэштеги не должны повторяться';
+    buttonSubmit.disabled = true;
+    return false;
+  } else {
+    buttonSubmit.disabled = false;
   }
   for(let i = 0; i < hashtagsArr.length; i++) {
     if (regexp.test(hashtagsArr[i]) === false) {

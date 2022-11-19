@@ -25,8 +25,7 @@ const inputUploadingImage = document.querySelector('#upload-file'); //input дл
 // Выбор изображения для загрузки осуществляется с помощью стандартного контрола загрузки файла #upload-file, который стилизован под букву «О» в логотипе.
 // После выбора изображения (изменения значения поля #upload-file), показывается форма редактирования изображения.
 // У элемента .img-upload__overlay удаляется класс hidden, а body задаётся класс modal-open.
-inputUploadingImage.addEventListener('click',(evt) => {
-  evt.preventDefault();
+inputUploadingImage.addEventListener('click',() => {
   uploadingImage.classList.remove('hidden');
   viewPhotoNoScroll.classList.add('modal-open');
 });
