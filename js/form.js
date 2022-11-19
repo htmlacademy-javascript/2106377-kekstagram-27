@@ -46,11 +46,19 @@ const uploadPreviewImg = uploadPreviewContainer.querySelector('img'); //карт
 buttonSmaller.addEventListener ('click', () => {
   inputScaleValue.value = `${parseInt(inputScaleValue.value, 10) - 25}%`;
   uploadPreviewImg.style = `transform: scale(${parseInt(inputScaleValue.value, 10) / 100})`;
+  if (inputScaleValue.value === `${parseInt(25, 10)}%`) {
+    buttonSmaller.disabled = true;
+    buttonBigger.disabled = false;
+  }
 });
 
 buttonBigger.addEventListener ('click', () => {
   inputScaleValue.value = `${parseInt(inputScaleValue.value, 10) + 25}%`;
   uploadPreviewImg.style = `transform: scale(${parseInt(inputScaleValue.value, 10) / 100})`;
+  if (inputScaleValue.value === `${parseInt(100, 10)}%`) {
+    buttonBigger.disabled = true;
+    buttonSmaller.disabled = false;
+  }
 });
 
 // + 5. После реализуйте закрытие формы.
