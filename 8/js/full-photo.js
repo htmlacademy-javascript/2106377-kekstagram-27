@@ -16,6 +16,7 @@ const likesCount = document.querySelector('.likes-count');
 const commentsCount = document.querySelector('.comments-count');
 
 const commentCounter = document.querySelector('.social__comment-count');//счётчик комментариев срятать после открытия окна
+
 const newCommentLoad = document.querySelector('.comments-loader');//загрузка иновых комментариев cрятать после открытия окна
 
 // Описание фотографии description вставьте строкой в блок .social__caption.
@@ -24,13 +25,9 @@ const descFullPhoto = document.querySelector('.social__caption');//блок оп
 // Список комментариев под фотографией: комментарии должны вставляться в блок .social__comments
 
 // контейнер
-const commentList = document.querySelector('.social__comments');//блок для комментариев
-const commentListItem = commentList.querySelectorAll('.social__comment');//li
-
-// удаляю эллемент
-for (let i = 0; i < commentListItem.length; i++ ) {
-  commentList.removeChild(commentListItem[i]);
-}
+const commentList = document.querySelector('.social__comments');// ul блок для комментариев
+// const commentListItem = commentList.querySelectorAll('.social__comment');//li
+const commentListItem = commentList.children;
 
 //используя объект desc отрисовываем комменты, количество лайков и так далее, количество комментов desc.comments.length
 const drawFullPhoto = (desc, evt) => {
@@ -41,8 +38,9 @@ const drawFullPhoto = (desc, evt) => {
   likesCount.textContent = desc.likes;
   commentsCount.textContent = desc.comments.length;
   descFullPhoto.textContent = desc.description;
-  commentCounter.classList.add('hidden');
-  newCommentLoad.classList.add('hidden');
+  // commentCounter.classList.add('hidden');
+  // newCommentLoad.classList.add('hidden');
+  // удаляю эллемент
   const similarCommentFragment = document.createDocumentFragment ();
   desc.comments.forEach ((content) => {
     // клонирую
@@ -54,77 +52,36 @@ const drawFullPhoto = (desc, evt) => {
     // добавляю клоннированный элемент во фрагмент
     similarCommentFragment.append(itemElement);
   });
-  // for (let i = 0; i < commentsArr.length; i++) {
-  //   // клонирую
-  //   const itemElement = commentListItem[0].cloneNode(true);
-  //   // элементы для подстановки значений из массива
-  //   itemElement.querySelector('.social__picture').src = commentsArr[i].avatar;
-  //   itemElement.querySelector('.social__picture').alt = commentsArr[i].name;
-  //   itemElement.querySelector('.social__text').textContent = commentsArr[i].message;
-  //   // добавляю клоннированный элемент во фрагмент
-  //   similarCommentFragment.append(itemElement);
-  // }
-  // добавляю фрагмент в контейнер
+  commentList.innerHTML = '';
   commentList.append(similarCommentFragment);
+
+  for (let i = 5; i < commentListItem.length; i ++) {
+    commentListItem[i].classList.add('hidden');
+  }
 };
 
 // Список комментариев под фотографией: в блок .social__comments.
 // Разметка :
-// <li class="social__comment">
+// {/* <li class="social__comment">
 //     <img
 //         class="social__picture"
 //         src="{{аватар}}"
 //         alt="{{имя комментатора}}"
 //         width="35" height="35">
 //     <p class="social__text">{{текст комментария}}</p>
-// </li>
-
-
-// в переменную выношу экспортированную функцию (массив из 15 элементов-комментов)
-// const similarComment = createSimilarComment();
-
-//используя объект desc отрисовываем комменты, количество лайков и так далее, количество комментов desc.comments.length
-// const drawCommentsFullPhoto = (desc) => {
-//   // evt.preventDefault();
-//   const similarCommentFragment = document.createDocumentFragment ();
-//   const itemElement = commentListItem[0].cloneNode(true);
-//   itemElement.querySelector('.social__picture').src = desc.description;
-//   itemElement.querySelector('.social__picture').alt = desc.description;
-//   itemElement.querySelector('.social__text').textContent = desc.description;
-//   similarCommentFragment.append(itemElement);
-//   commentList.append(similarCommentFragment);
-// };
-// console.log(drawcommentsFullPhoto());
-
-// // фрагмент
-// const similarCommentFragment = document.createDocumentFragment ();
-// // прохожу по каждому элементу в массиве
-// similarComment.forEach ((desc) => {
-//   // клонирую
-//   const itemElement = commentListItem[0].cloneNode(true);
-//   // элементы для подстановки значений из массива
-//   itemElement.querySelector('.social__picture').src = desc.avatar;
-//   itemElement.querySelector('.social__picture').alt = desc.name;
-//   itemElement.querySelector('.social__text').textContent = desc.message;
-//   // добавляю клоннированный элемент во фрагмент
-//   similarCommentFragment.append(itemElement);
-// });
-// // добавляю фрагмент в контейнер
-// commentList.append(similarCommentFragment);
-
+// </li> */}
 
 //2. доработайте код по выводу списка комментариев таким образом, чтобы список показывался не полностью,
 // а по 5 элементов, и следующие 5 элементов добавлялись бы по нажатию на кнопку «Загрузить ещё».
+
 const buttonCommentsLoader = document.querySelector('.social__comments-loader');//кнопка «Загрузить ещё»
-const containerComments = document.querySelector('.social__comment-count');//блок числа коментаривиев
-const newCommentListItem = commentList.querySelectorAll('.social__comment');
 
-for (let i = 5; i < newCommentListItem.length; i ++) {
-  newCommentListItem[i].classList.add('hidden');
-}
-
-buttonCommentsLoader.addEventListener('click', () => {
-  containerComments.textContent = `${parseInt(containerComments.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`;
+buttonCommentsLoader.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  commentCounter.textContent = `${parseInt(commentCounter.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`;
+  // for (let i = 5; i < commentListItem[i] + 10; i ++) {
+  //   commentListItem[i].classList.remove('hidden');
+  // }
 });
 
 //+ Не забудьте реализовать обновление числа показанных комментариев в блоке .social__comment-count.
@@ -157,6 +114,7 @@ document.addEventListener ('keydown', (evt) => {
     newCommentLoad.classList.remove('hidden');
   }
 });
+
 export{viewPhotoNoScroll};
 export{drawFullPhoto};
 

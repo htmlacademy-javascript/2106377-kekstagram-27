@@ -11,8 +11,9 @@
 // по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
 // Если хотя бы один из тегов не проходит нужных проверок, показывать сообщение об ошибке.
 
-// Поля, не перечисленные в техзадании, но существующие в разметке, особой валидации не требуют.
+
 const newImageForm = document.querySelector('.img-upload__form');//форма загрузки фото
+const hashtagsWrapper = newImageForm.querySelector ('.img-upload__field-wrapper');//div-родитель для поля хэштегов
 const hashtagsField = newImageForm.querySelector('.text__hashtags');//поле загрузки хештега
 
 const commentField = document.querySelector('.text__description');//поле ввода коммен-я
@@ -24,80 +25,84 @@ const pristine = new Pristine(newImageForm, {
   errorClass: 'img-upload__error-hashtags--invalid',
   successClass: 'img-upload__error-hashtags--valid',
   errorTextParent: 'img-upload__error-hashtags',
-  errorTextTag: 'span',
+  errorTextTag: 'div',
   errorTextClass: 'img-upload__error-text',
-  // classTo: 'img-upload__error-comment',
-  // errorClass: 'img-upload__error-comment--invalid',
-  // successClass: 'img-upload__error-comment--valid',
-  // errorTextParent: 'img-upload__error-comment',
-  // errorTextTag: 'span',
-  // errorTextClass: 'img-upload__error-text',
 });
+
+//проверка поля хэштегов по регулярному выражению
+let hashtagsArr = [];
+
+const regexp = /^#[a-zа-яё]{1,19}$/i;
+const errorMessageHashtags = document.createElement('div');//элемент с сообщением о верном заполнении
 
 function validateHashtags (value) {
-  const hashtagsArr = hashtagsField.value.split([' '], [5]);
-  // console.log(hashtagsArr);
+  hashtagsArr = hashtagsField.value.split([' ']);
+  hashtagsWrapper.append(errorMessageHashtags);
+  if (hashtagsArr.length > 5) {
+    errorMessageHashtags.textContent = 'не более 5 хэштегов';
+    buttonSubmit.disabled = true;
+    return false;
+  }
+
+  if (new Set(hashtagsArr).size !== hashtagsArr.length) {
+    errorMessageHashtags.textContent = 'хэштеги не должны повторяться';
+    buttonSubmit.disabled = true;
+    return false;
+  } else {
+    buttonSubmit.disabled = false;
+  }
   for(let i = 0; i < hashtagsArr.length; i++) {
-    const regexp = /^#[a-zа-яё]{1,19}\s$/i;
     if (regexp.test(hashtagsArr[i]) === false) {
-      // console.log('не верно!');
+      errorMessageHashtags.textContent = 'только буквы и числа, хэштеги разделяются пробелом';
+      buttonSubmit.disabled = true;
+      return false;
+    } else {
+      buttonSubmit.disabled = false;
+    }
+    if (hashtagsArr[i].length > 20) {
+      errorMessageHashtags.textContent = 'хештег не более 20 символов';
+      buttonSubmit.disabled = true;
+      return false;
+    } else {
+      buttonSubmit.disabled = false;
     }
   }
-  return value.length >= 2 && value.length <= 20;
+  return (value.length >= 2);
 }
 
-pristine.addValidator(//валидация поля хештегов
-  hashtagsField,
-  validateHashtags,
-  // 'От 2 до 20 символов'
+//валидация поля хештегов
+pristine.addValidator(
+  hashtagsField,//поле проверки
+  validateHashtags, //функция проверки
 );
 
-
-newImageForm.addEventListener ('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-  // const isValid = pristin.validate ();
-  // if (isValid) {
-  //   console.log('Форма заполнена верно');
-  // } else {
-  //   console.log('Форма заполнена не верно');
-  // }
-});
-
+//комменты
 function validateComments (value) {
-  return value.length === 140;
+  return value.length < 140;
 }
-
-pristine.addValidator(//валидация поля коментов
+//валидация поля коментов
+pristine.addValidator(
   commentField,
   validateComments,
   'Не более 140 символов'
 );
 
-
-// блокировка кнопки отправки
-hashtagsField.addEventListener ('input', () => {
-  // const hashtagsArr = hashtagsField.value.split([' '], [5]);
-  // console.log(hashtagsArr);
-  // for(let i = 0; i < hashtagsArr.length; i++) {
-  //   const regexp = /^#[a-zа-яё]{1,19}$/i;
-  //   console.log( regexp.test(hashtagsArr) );
-  // }
-  if (hashtagsField.value.length === 20) {
-    buttonSubmit.disabled = true;
-    // buttonSubmit.setAttribute ('disabled',true)- или так
+newImageForm.addEventListener ('submit', (evt) => {
+  evt.preventDefault();
+  pristine.validate();
+  if (!pristine.validate()){
+    // eslint-disable-next-line no-alert
+    alert('Форма заполненна не верно');
+    return false;
   }
+  evt.target.submit();
 });
 
 commentField.addEventListener ('input', () => {
   if (commentField.value.length === 140) {
     buttonSubmit.disabled = true;
     // buttonSubmit.setAttribute ('disabled',true)- или так
+  } else {
+    buttonSubmit.disabled = false;
   }
 });
-
-// const hashtagsArr = hashtagsField.value.split([' '], [5]);
-// console.log(hashtagsArr);
-// hashtagsArr.forEach(() => {
-//   /^#[a-zа-яё]{1,19}$/i.test(hashtagsArr);
-// });
