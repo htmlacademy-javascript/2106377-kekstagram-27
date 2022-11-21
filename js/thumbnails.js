@@ -23,7 +23,9 @@ const templateUsersPhoto = document.querySelector('#picture').content.querySelec
 
 // в переменную выношу экспортированную функцию
 const similarPhoto = createSimilarDescPhoto();
+
 // фрагмент
+// const renderThumbnails = () => {};
 const similarPhotoFragment = document.createDocumentFragment ();
 // прохожу по каждому элементу в массиве
 similarPhoto.forEach ((desc) => {
