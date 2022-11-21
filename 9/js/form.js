@@ -25,9 +25,21 @@ const inputUploadingImage = document.querySelector('#upload-file'); //input дл
 // Выбор изображения для загрузки осуществляется с помощью стандартного контрола загрузки файла #upload-file, который стилизован под букву «О» в логотипе.
 // После выбора изображения (изменения значения поля #upload-file), показывается форма редактирования изображения.
 // У элемента .img-upload__overlay удаляется класс hidden, а body задаётся класс modal-open.
-inputUploadingImage.addEventListener('click',() => {
+
+inputUploadingImage.addEventListener('change',() => {
   uploadingImage.classList.remove('hidden');
   viewPhotoNoScroll.classList.add('modal-open');
+  //закрытие нажатием клавиши Esc.
+  document.addEventListener ('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      if (document.querySelector('.text__hashtags') === document.activeElement || document.querySelector('.text__description') === document.activeElement) {
+        evt.stopPropagation();
+      } else {
+        uploadingImage.classList.add('hidden');
+        viewPhotoNoScroll.classList.remove('modal-open');
+      }
+    }
+  });
 });
 
 // Масштаб:
@@ -64,42 +76,24 @@ buttonBigger.addEventListener ('click', () => {
 // + 5. После реализуйте закрытие формы.
 // !! Обратите внимание
 //+- при закрытии формы дополнительно необходимо сбрасывать значение поля выбора файла #upload-file.
+
 // В принципе, всё будет работать, если при повторной попытке загрузить в поле другую фотографию.
 // НЕПОНЯТНО!!!!!!!!     Но! Событие change не сработает, если пользователь попробует загрузить ту же фотографию, а значит окно с формой
 // не отобразится, что будет нарушением техзадания. Значение других полей формы также нужно сбрасывать.
 
-// Закрытие формы редактирования:
-//+  либо нажатием на кнопку #upload-cancel,
-//+  либо нажатием клавиши Esc.
-//+  Элементу .img-upload__overlay возвращается  hidden. У элемента body удаляется  modal-open.
+//+Закрытие формы редактирования нажатием на кнопку #upload-cancel, элементу .img-upload__overlay возвращается  hidden. У элемента body удаляется  modal-open.
 
 const buttonUploadingCancel = document.querySelector('#upload-cancel');//Кнопка [Х] для закрытия формы
 buttonUploadingCancel.addEventListener (('click'), () => {
   uploadingImage.classList.add('hidden');
   viewPhotoNoScroll.classList.remove('modal-open');
-  const inputUploadFile = document.querySelector('#upload-file');//поле загрузки изображения
-  inputUploadFile.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
+  inputUploadingImage.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
   inputScaleValue.value = '100%';// сброс размер изображения
-});
-
-// + Как отменить обработчик Esc при фокусе?
-// Задача не имеет одного верного решения, однако намекнём на самый простой — использовать stopPropagation для события нажатия
-// клавиш в поле при фокусе.
-
-document.addEventListener ('keydown', (evt) => {
-  if (evt.key === 'Escape') {
-    if (document.querySelector('.text__hashtags') === document.activeElement || document.querySelector('.text__description') === document.activeElement) {
-      evt.stopPropagation();
-    } else {
-      uploadingImage.classList.add('hidden');
-      viewPhotoNoScroll.classList.remove('modal-open');
-    }
-  }
 });
 
 //МОДУЛЬ 9
 // С помощью библиотеки noUiSlider (/vendor/nouislider) реализуйте применение эффекта для изображения.
-//Кроме визуального применения эффекта необходимо записывать значение в скрытое поле для дальнейшей отправки на сервер. ?????
+//Кроме визуального применения эффекта необходимо записывать значение в скрытое поле для дальнейшей отправки на сервер. -input скрытый
 // + Эффект:
 // При смене эффекта, выбором одного из значений среди радиокнопок .effects__radio, добавить картинке внутри .img-upload__preview
 // CSS-класс, соответствующий эффекту. Например, если выбран эффект .effect-chrome, изображению нужно добавить класс effects__preview--chrome.
@@ -110,30 +104,26 @@ document.addEventListener ('keydown', (evt) => {
 // При изменении уровня интенсивности эффекта (предоставляется API слайдера), CSS-стили картинки внутри .img-upload__preview
 // обновляются
 
-// 		Для эффекта «Оригинал» CSS-стили filter удаляются.
-// 		При выборе эффекта «Оригинал» слайдер скрывается.
-
 // 		При переключении эффектов, уровень насыщенности сбрасывается доначального значения (100%):
 //    слайдер, CSS-стиль изображения изначение поля должны обновляться.
+// const newImageForm = document.querySelector('.img-upload__form');//форма загрузки фото
 const sliderEffects = document.querySelector('.effect-level__slider');//div слайдера
 sliderEffects.classList.add('hidden');
 const inputEffectValue = document.querySelector('.effect-level__value');// input - поле значения уровня эффекта
 // const fieldsetEffectLevel = document.querySelector('.effect-level');//fieldset изменение глубины эффекта
 // const effectsFieldset = document.querySelector('.effects');// fieldset наложение эффекта на изображение effects__list
-const effectsList = document.querySelector('.effects__list');//  ul    effects__list
+const effectsList = document.querySelector('.effects__list');//  ul  effects__list
 
-
-inputEffectValue.value = 0;//начальное значение в поле ввода
-const radio = document.querySelector('input[type="radio"]');
+inputEffectValue.value = 100;//начальное значение в поле ввода
 
 //создаем слайдер с мин/макс значением шагом и начальной точкой
 noUiSlider.create(sliderEffects, {
   range: {
     min: 0,
-    max: 1,
+    max: 100,
   },
-  start: 0,
-  step: 0.1,
+  start: 100,
+  step: 1,
   connect: 'lower',
   format: {
     to: function (value) {
@@ -145,47 +135,68 @@ noUiSlider.create(sliderEffects, {
   },
 });
 
-sliderEffects.noUiSlider.on('update', () => {
-  inputEffectValue.value = sliderEffects.noUiSlider.get();//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
-});
-
 function onEffectChange (evt) {
+  // console.log(inputEffectValue.value);
   if (evt.target.checked) {
+    sliderEffects.noUiSlider.on('update', () => {//события update будет вызвано при изменении положения слайдера, и выводить в консоль параметры колбэка.
+      // inputEffectValue.value = `${String(sliderEffects.noUiSlider.get())}%`;//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
+      inputEffectValue.value = sliderEffects.noUiSlider.get();//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
+      switch (evt.target.value) {
+        case 'none':
+          uploadPreviewImg.style.filter = null;
+          break;
+        case 'chrome':
+          uploadPreviewImg.style = `filter: grayscale(${parseInt(inputEffectValue.value, 10)})`;
+          break;
+        case 'sepia':
+          uploadPreviewImg.style = `filter: sepia(${parseInt(inputEffectValue.value, 10)})`;
+          break;
+        case 'marvin':
+          uploadPreviewImg.style = `filter: invert(${parseInt(inputEffectValue.value, 10)})`;
+          break;
+        case 'phobos':
+          uploadPreviewImg.style = `filter: blur(${parseInt(inputEffectValue.value, 10)})`;
+          break;
+
+        case 'heat':
+          uploadPreviewImg.style = `filter: brightness(${parseInt(inputEffectValue.value, 10)})`;
+          break;
+      }
+    });
     uploadPreviewImg.classList = `effects__preview--${evt.target.value}`;
-    sliderEffects.classList.remove('hidden');
-    if(radio.value === 'none') {//Для  оригинала фильтр уддаляется
-      uploadPreviewImg.style.filter = null;
+    if(evt.target.value === 'none') {//Для  оригинала фильтр уддаляется
+      sliderEffects.classList.add('hidden');//слайдер скрывается.
     }
-    if(radio.value === 'chrome') {//Для эффекта «Хром»— filter: grayscale(0..1) с шагом 0.1
-      uploadPreviewImg.style = `filter: grayscale(${parseInt(inputEffectValue.value, 10)})`;
+    if(evt.target.value === 'chrome') {//Для эффекта «Хром»— filter: grayscale(0..1) с шагом 0.1
+      sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
           max: 1
         },
-        start: 0,
-        step: 0.1
+        start: 1,
+        step: 0.1,
       });
     }
-    if(radio.value === 'sepia') {//Для эффекта «Сепия»— filter: sepia(0..1) с шагом 0.1;
-      uploadPreviewImg.style = `filter: sepia(${parseInt(inputEffectValue.value, 10)})`;
+    if(evt.target.value === 'sepia') {//Для эффекта «Сепия»— filter: sepia(0..1) с шагом 0.1;
+      sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
           max: 1
         },
-        start: 0,
-        step: 0.1
+        start: 1,
+        step: 0.1,
       });
     }
-    if(radio.value === 'marvin') {//Для эффекта «Марвин»— filter: invert(0..100%) с шагом 1%;
-      uploadPreviewImg.style = `filter: invert(${parseInt(inputEffectValue.value, 10)})`;
+    if(evt.target.value === 'marvin') {//Для эффекта «Марвин»— filter: invert(0..100%) с шагом 1%;
+      sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
           max: 100
         },
-        start: 0,
+        start: 100,
         step: 1,
         format: {
           to: function (value) {
@@ -197,14 +208,14 @@ function onEffectChange (evt) {
         },
       });
     }
-    if(radio.value === 'phobos') {//Для эффекта «Фобос»— filter: blur(0..3px) с шагом 0.1px;
-      uploadPreviewImg.style = `filter: blur(${parseInt(inputEffectValue.value, 10)})`;
+    if(evt.target.value === 'phobos') {//Для эффекта «Фобос»— filter: blur(0..3px) с шагом 0.1px;
+      sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
           max: 3
         },
-        start: 0,
+        start: 3,
         step: 0.1,
         format: {
           to: function (value) {
@@ -216,19 +227,20 @@ function onEffectChange (evt) {
         },
       });
     }
-    if(radio.value === 'heat') {//Для эффекта «Зной»— filter: brightness(1..3) с шагом 0.1;
-      uploadPreviewImg.style = `filter: brightness(${parseInt(inputEffectValue.value, 10)})`;
+    if(evt.target.value === 'heat') {//Для эффекта «Зной»— filter: brightness(1..3) с шагом 0.1;
+      sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
           min: 0,
           max: 3
         },
-        start: 0,
-        step: 0.1
+        start: 3,
+        step: 0.1,
       });
     }
   }
 }
 
 //делегирование
-effectsList.addEventListener ('change', onEffectChange);
+effectsList.addEventListener ('input', onEffectChange);
+// newImageForm.addEventListener ('input', onEffectChange);

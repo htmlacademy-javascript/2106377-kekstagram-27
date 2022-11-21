@@ -40,7 +40,7 @@ const getMoreComment = (evt) => {
   for (let i = 0; i < 5; i ++) {
     hiddenComments[i].classList.remove('hidden');
   }
-  if(hiddenComments.classList.contains('hidden') === false) {
+  if(commentList.querySelector('.social__comment.hidden') === null) {
     commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
     buttonCommentsLoader.disabled = true;
   }
