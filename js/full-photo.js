@@ -1,9 +1,5 @@
-// import{createSimilarComment} from './create-comments.js';
-// import{createSimilarDescPhoto} from './create-photos.js';
-
-// Реализовать сценарий просмотра фотографий в полноразмерном режиме.
+import{isEscapeKey} from './util.js';
 const viewFullPhoto = document.querySelector('.big-picture');//окно просомотра
-
 const viewPhotoNoScroll = document.querySelector('body');
 
 // const thumbnailUsersPhoto = document.querySelectorAll('.picture__img');//миниатюры фото
@@ -14,20 +10,31 @@ const fullPhotoImage = document.querySelector('.big-picture__img').querySelector
 const likesCount = document.querySelector('.likes-count');
 // Количество комментариев comments  - текстовое содержание элемент
 const commentsCount = document.querySelector('.comments-count');
-
 const commentCounter = document.querySelector('.social__comment-count');//счётчик комментариев срятать после открытия окна
-
 const newCommentLoad = document.querySelector('.comments-loader');//загрузка иновых комментариев cрятать после открытия окна
 
 // Описание фотографии description вставьте строкой в блок .social__caption.
 const descFullPhoto = document.querySelector('.social__caption');//блок описания фото
-// const descThumbnailsPhoto = createSimilarDescPhoto ();
-// Список комментариев под фотографией: комментарии должны вставляться в блок .social__comments
 
-// контейнер
+// контейнер Список комментариев
 const commentList = document.querySelector('.social__comments');// ul блок для комментариев
-// const commentListItem = commentList.querySelectorAll('.social__comment');//li
-const commentListItem = commentList.children;
+const commentListItem = commentList.children;//li
+const buttonCommentsLoader = document.querySelector('.social__comments-loader');//кнопка «Загрузить ещё»
+
+// все li с класслм hidden - первым 5  класс убираю
+const getMoreComment = (evt) => {
+  evt.preventDefault();
+  //обновление числа показанных комментариев
+  commentCounter.textContent = `${parseInt(commentCounter.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`;
+  const hiddenComments = commentList.querySelectorAll('.hidden');//все li с классом hidden
+  for (let i = 0; i < 5; i ++) {
+    hiddenComments[i].classList.remove('hidden');
+  }
+  if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
+    commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
+    buttonCommentsLoader.disabled = true;
+  }
+};
 
 //используя объект desc отрисовываем комменты, количество лайков и так далее, количество комментов desc.comments.length
 const drawFullPhoto = (desc, evt) => {
@@ -38,8 +45,6 @@ const drawFullPhoto = (desc, evt) => {
   likesCount.textContent = desc.likes;
   commentsCount.textContent = desc.comments.length;
   descFullPhoto.textContent = desc.description;
-  // commentCounter.classList.add('hidden');
-  // newCommentLoad.classList.add('hidden');
   // удаляю эллемент
   const similarCommentFragment = document.createDocumentFragment ();
   desc.comments.forEach ((content) => {
@@ -58,6 +63,7 @@ const drawFullPhoto = (desc, evt) => {
   for (let i = 5; i < commentListItem.length; i ++) {
     commentListItem[i].classList.add('hidden');
   }
+  buttonCommentsLoader.addEventListener('click', () => getMoreComment(evt));
 };
 
 // Список комментариев под фотографией: в блок .social__comments.
@@ -71,32 +77,6 @@ const drawFullPhoto = (desc, evt) => {
 //     <p class="social__text">{{текст комментария}}</p>
 // </li> */}
 
-//2. доработайте код по выводу списка комментариев таким образом, чтобы список показывался не полностью,
-// а по 5 элементов, и следующие 5 элементов добавлялись бы по нажатию на кнопку «Загрузить ещё».
-
-const buttonCommentsLoader = document.querySelector('.social__comments-loader');//кнопка «Загрузить ещё»
-
-buttonCommentsLoader.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  commentCounter.textContent = `${parseInt(commentCounter.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`;
-  // for (let i = 5; i < commentListItem[i] + 10; i ++) {
-  //   commentListItem[i].classList.remove('hidden');
-  // }
-});
-
-//+ Не забудьте реализовать обновление числа показанных комментариев в блоке .social__comment-count.
-// !!!!внимание
-//хотя кнопка называется «Загрузить ещё», никакой загрузки с сервера не происходит. Просто показываются следующие 5 комментариев из списка
-
-// Сразу после открытия изображения в полноэкранном режиме отображается не более 5 комментариев.
-// + Количество показанных комментариев и общее число комментариев отображается в блоке .social__comment-count.
-//+  Пример разметки списка комментариев приведён в блоке .social__comments.
-// + Комментарий оформляется отдельным элементом списка li с классом social__comment.
-// + Аватарка автора комментария отображается в блоке .social__picture.
-// + Имя автора комментария отображается в атрибуте alt его аватарки.
-// + Текст комментария выводится в блоке .social__text.
-//.slice(0,6)
-
 // код для закрытия окна по нажатию клавиши Esc и клике по иконке закрытия
 const cancelFullPhoto = document.querySelector('.big-picture__cancel');
 cancelFullPhoto.addEventListener ('click', () => {
@@ -107,7 +87,7 @@ cancelFullPhoto.addEventListener ('click', () => {
 });
 
 document.addEventListener ('keydown', (evt) => {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     viewFullPhoto.classList.add('hidden');
     viewPhotoNoScroll.classList.remove('modal-open');
     commentCounter.classList.remove('hidden');
@@ -117,20 +97,3 @@ document.addEventListener ('keydown', (evt) => {
 
 export{viewPhotoNoScroll};
 export{drawFullPhoto};
-
-// Как связать модули миниатюр и полноразмерного режима?
-// Задача не имеет одного верного решения, поэтому будет правильным:
-// ++ использование третьего модуля для связки двух других,
-// - импорт модуля полноразмерных изображений в модуль миниатюр и дальнейшая работа с интерфейсом
-//  этого модуля, addEventListener и замыканиями.
-
-
-// модуль 8 часть 2
-//+ 1. Покажите блоки счётчика комментариев .social__comment-count и загрузки новых комментариев .comments-loader, убрав у них класс hidden.
-
-//2. В модуле, который отвечает за отрисовку окна с полноразмерным изображением, доработайте код по выводу списка комментариев таким образом,
-//чтобы список показывался не полностью, а по 5 элементов, и следующие 5 элементов добавлялись бы по нажатию на кнопку «Загрузить ещё».
-//Не забудьте реализовать обновление числа показанных комментариев в блоке .social__comment-count.
-
-// !!!!внимание
-//хотя кнопка называется «Загрузить ещё», никакой загрузки с сервера не происходит. Просто показываются следующие 5 комментариев из списка
