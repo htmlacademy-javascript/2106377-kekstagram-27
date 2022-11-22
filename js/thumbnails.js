@@ -13,7 +13,7 @@
 // </a>
 // </template> */
 
-import{createSimilarDescPhoto} from './create-photos.js';
+// import{createSimilarDescPhoto} from './create-photos.js';
 import{drawFullPhoto} from './full-photo.js';
 
 // контейнер для изображений др пользователей
@@ -22,23 +22,24 @@ const containerUsersPhoto = document.querySelector('.pictures');
 const templateUsersPhoto = document.querySelector('#picture').content.querySelector('.picture');
 
 // в переменную выношу экспортированную функцию
-const similarPhoto = createSimilarDescPhoto();
+// const similarPhoto = createSimilarDescPhoto();
 
+const renderThumbnails = (similarPhoto) => {
 // фрагмент
-// const renderThumbnails = () => {};
-const similarPhotoFragment = document.createDocumentFragment ();
-// прохожу по каждому элементу в массиве
-similarPhoto.forEach ((desc) => {
+  const similarPhotoFragment = document.createDocumentFragment ();
+
+  similarPhoto.forEach ((desc) => {
   // клонирую шаблон
-  const photoElement = templateUsersPhoto.cloneNode(true);
-  // элементы шаблона для подстановки значений из массива
-  photoElement.querySelector('.picture__img').src = desc.url;// Адрес изображения url подставьте как атрибут src изображения.
-  photoElement.querySelector('.picture__likes').textContent = desc.likes;// Количество лайков likes выведите в блок .picture__likes.
-  photoElement.querySelector('.picture__comments').textContent = desc.comments.length; // Количество комментариев comments выведите в блок .picture__comments.
-  photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
-  // добавляю клоннированный элемент во фрагмент
-  similarPhotoFragment.append(photoElement);
-});
-// добавляю клоннированный элемент в контейнер .pictures
-containerUsersPhoto.append(similarPhotoFragment);
-// Подключите модуль в проект +
+    const photoElement = templateUsersPhoto.cloneNode(true);
+    // элементы шаблона для подстановки значений из массива
+    photoElement.querySelector('.picture__img').src = desc.url;// Адрес изображения url подставьте как атрибут src изображения.
+    photoElement.querySelector('.picture__likes').textContent = desc.likes;// Количество лайков likes выведите в блок .picture__likes.
+    photoElement.querySelector('.picture__comments').textContent = desc.comments.length; // Количество комментариев comments выведите в блок .picture__comments.
+    photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
+    // добавляю клоннированный элемент во фрагмент
+    similarPhotoFragment.append(photoElement);
+  });
+  // добавляю клоннированный элемент в контейнер .pictures
+  containerUsersPhoto.append(similarPhotoFragment);
+};
+export {renderThumbnails};

@@ -563,8 +563,8 @@ main {
 }
 
 .effect-level__value {
-  display: block;
-  color: #000000;
+  display: none;
+  color: #ffffff;
 }
 
 
