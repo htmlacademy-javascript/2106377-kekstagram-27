@@ -30,10 +30,10 @@ const getMoreComment = (evt) => {
   for (let i = 0; i < 5; i ++) {
     hiddenComments[i].classList.remove('hidden');
   }
-  if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
-    commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
-    buttonCommentsLoader.disabled = true;
-  }
+  // if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
+  //   commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
+  //   buttonCommentsLoader.disabled = true;
+  // }
 };
 
 //используя объект desc отрисовываем комменты, количество лайков и так далее, количество комментов desc.comments.length

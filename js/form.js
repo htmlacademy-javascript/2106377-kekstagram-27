@@ -1,10 +1,19 @@
 import{viewPhotoNoScroll} from './full-photo.js';
 import{isEscapeKey} from './util.js';
-const uploadingImage = document.querySelector('.img-upload__overlay');//форма редактирования изображения
+const uploadingImage = document.querySelector('.img-upload__overlay');//блок редактирования изображения
 const inputUploadingImage = document.querySelector('#upload-file'); //input для загрузки изображения и формы
-// Выбор изображения для загрузки осуществляется с помощью стандартного контрола загрузки файла #upload-file, который стилизован под букву «О» в логотипе.
-// После выбора изображения (изменения значения поля #upload-file), показывается форма редактирования изображения.
-// У элемента .img-upload__overlay удаляется класс hidden, а body задаётся класс modal-open.
+
+const buttonSmaller = document.querySelector('.scale__control--smaller');// кнопка регулирования -
+const buttonBigger = document.querySelector('.scale__control--bigger');// кнопка регулирования +
+const inputScaleValue = document.querySelector('.scale__control--value');//размер изображения
+const uploadPreviewContainer = document.querySelector('.img-upload__preview');
+const uploadPreviewImg = uploadPreviewContainer.querySelector('img'); //картинка внутри .img-upload__preview
+const buttonUploadingCancel = document.querySelector('#upload-cancel');//Кнопка [Х] для закрытия формы
+
+const sliderEffects = document.querySelector('.effect-level__slider');//div слайдера
+sliderEffects.classList.add('hidden');
+const inputEffectValue = document.querySelector('.effect-level__value');// input - поле значения уровня эффекта (скрытый)
+const effectsList = document.querySelector('.effects__list');//  ul  effects__list
 
 const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
   if (isEscapeKey (evt)) {
@@ -15,7 +24,7 @@ const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в пе
     }
   }
 };
-//функция открытия формы
+//открытие формы ф-я
 function openFormImage () {
   uploadingImage.classList.remove('hidden');
   viewPhotoNoScroll.classList.add('modal-open');
@@ -27,16 +36,21 @@ inputUploadingImage.addEventListener('change',() => {
   openFormImage();
 });
 
+//закрытие формы ф-я
+function closeFormImage () {
+  uploadingImage.classList.add('hidden');
+  viewPhotoNoScroll.classList.remove('modal-open');
+  document.removeEventListener ('keydown', onUploadingImageEscKeydown);
+  inputUploadingImage.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
+  inputScaleValue.value = '100%';// сброс размер изображения
+}
+
+//слушатель на нажатие кнопки закрыть окно
+buttonUploadingCancel.addEventListener (('click'), () => {
+  closeFormImage();
+});
+
 // Масштаб:
-// +  При нажатии на кнопки .scale__control--smaller и .scale__control--bigger должно изменяться значение поля .scale__control--value;
-// + При изменении масштаба изображению внутри .img-upload__preview должен добавляться соответствующий стиль CSS, который с помощью трансформации scale задаёт масштаб.
-const buttonSmaller = document.querySelector('.scale__control--smaller');// кнопка регулирования -
-const buttonBigger = document.querySelector('.scale__control--bigger');// кнопка регулирования +
-const inputScaleValue = document.querySelector('.scale__control--value');//размер изображения
-
-const uploadPreviewContainer = document.querySelector('.img-upload__preview');
-const uploadPreviewImg = uploadPreviewContainer.querySelector('img'); //картинка внутри .img-upload__preview
-
 buttonSmaller.addEventListener ('click', () => {
   inputScaleValue.value = `${parseInt(inputScaleValue.value, 10) - 25}%`;
   uploadPreviewImg.style = `transform: scale(${parseInt(inputScaleValue.value, 10) / 100})`;
@@ -55,35 +69,7 @@ buttonBigger.addEventListener ('click', () => {
   }
 });
 
-const buttonUploadingCancel = document.querySelector('#upload-cancel');//Кнопка [Х] для закрытия формы
-
-// Закрытие формы:
-function closeFormImage () {
-  uploadingImage.classList.add('hidden');
-  viewPhotoNoScroll.classList.remove('modal-open');
-  document.removeEventListener ('keydown', onUploadingImageEscKeydown);
-  inputUploadingImage.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
-  inputScaleValue.value = '100%';// сброс размер изображения
-}
-
-//слушатель на нажатие кнопки закрыть окно
-buttonUploadingCancel.addEventListener (('click'), () => {
-  closeFormImage();
-});
-
-//МОДУЛЬ 9
-// + Эффект:
-// При смене эффекта, выбором одного из значений среди радиокнопок .effects__radio, добавить картинке внутри .img-upload__preview
-// CSS-класс, соответствующий эффекту. Например, если выбран эффект .effect-chrome, изображению нужно добавить класс effects__preview--chrome.
-// Интенсивность эффекта регулируется перемещением ползунка в слайдере.
-// При изменении уровня интенсивности эффекта (предоставляется API слайдера), CSS-стили картинки внутри .img-upload__preview обновляются
-// 		При переключении эффектов, уровень насыщенности сбрасывается доначального значения (100%): слайдер, CSS-стиль изображения изначение поля должны обновляться.
-
-const sliderEffects = document.querySelector('.effect-level__slider');//div слайдера
-sliderEffects.classList.add('hidden');
-const inputEffectValue = document.querySelector('.effect-level__value');// input - поле значения уровня эффекта (скрытый)
-const effectsList = document.querySelector('.effects__list');//  ul  effects__list
-
+//Эффект:
 inputEffectValue.value = 100;//начальное значение в поле ввода
 
 //создаем слайдер с мин/макс значением шагом и начальной точкой ползунка
@@ -212,4 +198,5 @@ function onEffectChange (evt) {
 }
 //делегирование
 effectsList.addEventListener ('input', onEffectChange);
-// newImageForm.addEventListener ('input', onEffectChange);
+
+export{openFormImage, closeFormImage};

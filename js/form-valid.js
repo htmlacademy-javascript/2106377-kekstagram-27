@@ -1,26 +1,27 @@
-//  +-  6. Напишите код для валидации формы добавления изображения, используя библиотеку Pristine (/vendor/pristine).
-// Список полей для валидации:
-// +- Хэш-теги Pristine  - выводит только одно сообщение - о длине хештега менее 2 символов
-// +  Комментарий
-// + - 7. Реализуйте логику проверки так, чтобы, как минимум, она срабатывала при попытке отправить форму и не давала этого сделать,
-//  если форма заполнена не по правилам. При желании, реализуйте проверки сразу при вводе значения в поле.
+import { sendData } from './api.js';
+import { showAlert } from './util.js';
+import{isEscapeKey} from './util.js';
 
-// - Валидация хеш-тегов?
-// Для валидации хэш-тегов вам придётся вспомнить, как работать с массивами. Набор хэш-тегов можно превратить в массив,
-// воспользовавшись методом .split(). Он разбивает строки на массивы. После этого, вы можете написать цикл, который будет ходить
-// по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
-// Если хотя бы один из тегов не проходит нужных проверок, показывать сообщение об ошибке.
-
-
-const newImageForm = document.querySelector('.img-upload__form');//форма загрузки фото
-const hashtagsWrapper = newImageForm.querySelector ('.img-upload__field-wrapper');//div-родитель для поля хэштегов
-const hashtagsField = newImageForm.querySelector('.text__hashtags');//поле загрузки хештега
+const ImageForm = document.querySelector('.img-upload__form');//форма загрузки фото
+const hashtagsWrapper = ImageForm.querySelector ('.img-upload__field-wrapper');//div-родитель для поля хэштегов
+const hashtagsField = ImageForm.querySelector('.text__hashtags');//поле загрузки хештега
 
 const commentField = document.querySelector('.text__description');//поле ввода коммен-я
 const buttonSubmit = document.querySelector('.img-upload__submit');//кнопка отправки данных на сервер
 
+const regexp = /^#[a-zа-яё]{1,19}$/i;
+const errorMessageHashtags = document.createElement('div');//элемент с сообщением о верном заполнении
+const body = document.querySelector('body');
+
+const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
+  if (isEscapeKey (evt)) {
+    closeSuccessMessage();
+    evt.stopPropagation();
+  }
+};
+
 // валидация полей хэштегов и комментов
-const pristine = new Pristine(newImageForm, {
+const pristine = new Pristine(ImageForm, {
   classTo: 'img-upload__error-hashtags',
   errorClass: 'img-upload__error-hashtags--invalid',
   successClass: 'img-upload__error-hashtags--valid',
@@ -32,12 +33,10 @@ const pristine = new Pristine(newImageForm, {
 //проверка поля хэштегов по регулярному выражению
 let hashtagsArr = [];
 
-const regexp = /^#[a-zа-яё]{1,19}$/i;
-const errorMessageHashtags = document.createElement('div');//элемент с сообщением о верном заполнении
-
 function validateHashtags (value) {
   hashtagsArr = hashtagsField.value.split([' ']);
   hashtagsWrapper.append(errorMessageHashtags);
+
   if (hashtagsArr.length > 5) {
     errorMessageHashtags.textContent = 'не более 5 хэштегов';
     buttonSubmit.disabled = true;
@@ -87,17 +86,6 @@ pristine.addValidator(
   'Не более 140 символов'
 );
 
-newImageForm.addEventListener ('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-  if (!pristine.validate()){
-    // eslint-disable-next-line no-alert
-    alert('Форма заполненна не верно');
-    return false;
-  }
-  evt.target.submit();
-});
-
 commentField.addEventListener ('input', () => {
   if (commentField.value.length === 140) {
     buttonSubmit.disabled = true;
@@ -106,3 +94,103 @@ commentField.addEventListener ('input', () => {
     buttonSubmit.disabled = false;
   }
 });
+
+//блокировка кнопки во время отправки и разблокировние после
+const blockButtonSubmit = () => {
+  buttonSubmit.disabled = true;
+  buttonSubmit.textContent = 'Публикую...';
+};
+
+const unblockButtonSubmit = () => {
+  buttonSubmit.disabled = false;
+  buttonSubmit.textContent = 'Опубликовать';
+};
+
+function closeSuccessMessage () {
+  document.querySelector('.success').classList.add('hidden');
+  document.removeEventListener ('keydown', onUploadingImageEscKeydown);
+}
+function closeErrorMessage () {
+  document.querySelector('.error').classList.add('hidden');
+  document.removeEventListener ('keydown', onUploadingImageEscKeydown);
+}
+//показ блока успешной отправки
+function showSuccessMessage () {
+  const fragmentSuccessMessage = document.createDocumentFragment ();
+  const templateSuccessMessage = document.querySelector('#success').content.querySelector('.success');
+
+  const element = templateSuccessMessage.cloneNode(true);
+  fragmentSuccessMessage.append(element);
+  body.append(fragmentSuccessMessage);
+
+  document.addEventListener ('keydown', onUploadingImageEscKeydown);
+
+  document.addEventListener( 'click', (evt) => {
+    const SuccessContainer = document.querySelector('.success__inner');
+    if (!SuccessContainer.contains(evt.target)){
+      SuccessContainer.classList.add('hidden');
+    }
+  });
+
+  const buttonSuccess = document.querySelector('.success__button');//rryjпка закрытия сообщения
+
+  //закрытие блока успешной отправки
+  buttonSuccess.addEventListener ('click', () => {
+    closeSuccessMessage();
+  });
+}
+
+
+function showErrorMessage () {
+  const fragmentErrorMessage = document.createDocumentFragment ();
+  const templateErrorMessage = document.querySelector('#error').content.querySelector('.error');
+
+  const element = templateErrorMessage.cloneNode(true);
+  fragmentErrorMessage.append(element);
+  body.append(fragmentErrorMessage);
+
+  document.addEventListener ('keydown', onUploadingImageEscKeydown);
+
+  document.addEventListener( 'click', (evt) => {
+    const ErrorContainer = document.querySelector('.error__inner');
+    if (!ErrorContainer.contains(evt.target)){
+      ErrorContainer.classList.add('hidden');
+    }
+  });
+
+  const buttonError = document.querySelector('.error__button');
+
+  //закрытие блока успешной отправки
+  buttonError.addEventListener ('click', () => {
+    closeErrorMessage();
+  });
+}
+
+//обработчик отправки с параметром-клбэком (в случае успешной отправки)
+const setImageFormSubmit = (onSuccess) => {
+  ImageForm.addEventListener ('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockButtonSubmit();
+      sendData(
+        () => {
+          onSuccess();
+          unblockButtonSubmit();
+          hashtagsField.value = '';
+          commentField.value = '';
+          showSuccessMessage();
+        },
+        () => {
+          showAlert('Форма не отправлена. Проверте правильность введенных данных');
+          unblockButtonSubmit();
+          showErrorMessage();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
+
+export{setImageFormSubmit};
