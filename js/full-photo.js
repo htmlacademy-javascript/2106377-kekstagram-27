@@ -30,13 +30,12 @@ const getMoreComment = (evt) => {
     if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
     // if(commentList.length === null) {//если нет элементов с классом hidden кнопка загрузки не активна
       commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
-      console.log(commentCounter);
       buttonCommentsLoader.disabled = true;
     }
   }
 };
 
-// проблема  с комментами. кнопка 'загрузить еще' блокируется, на действие при клике то продолжает
+// проблема  с комментами. кнопка 'загрузить еще' блокируется, на действие при клике  продолжает
 // происходить, счетчик комментариев, нужно проверять не задизейблена ли кнопка, и если задизаблена тогда прекращать грузить комменты
 
 //отрисовка полноразмерного фото
