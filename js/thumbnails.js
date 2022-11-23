@@ -3,6 +3,7 @@ const RANDOM_PHOTO_COUNT = 10;
 const containerUsersPhoto = document.querySelector('.pictures');// контейнер для изображений др пользователей
 const templateUsersPhoto = document.querySelector('#picture').content.querySelector('.picture');// шаблон
 const filtersForm = document.querySelector('.img-filters__form');//форма с кнопкками филтров
+const filtersContainer = document.querySelector('.img-filters');
 
 const comparePhotos = (a, b) => b.comments.length - a.comments.length;
 
@@ -58,7 +59,6 @@ const renderThumbnails = (similarPhoto, button = 'filter-default') => {
 };
 
 // блок филтров фото
-const filtersContainer = document.querySelector('.img-filters');
 filtersContainer.classList.remove('img-filters--inactive');
 
 //обработчики
