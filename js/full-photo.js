@@ -13,7 +13,7 @@ const commentListItem = commentList.children;//li
 const buttonCommentsLoader = document.querySelector('.social__comments-loader');//кнопка «Загрузить ещё»
 const cancelFullPhoto = document.querySelector('.big-picture__cancel');//кнопка закрытия окна
 
-const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
+const onUploadingImageEscKeydown = (evt) => {
   if (isEscapeKey (evt)) {
     closeFullPhoto();
   }
@@ -21,7 +21,7 @@ const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в пе
 
 const getMoreComment = (evt) => {
   evt.preventDefault();
-  if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
+  if(commentList.querySelector('.social__comment.hidden') === null) {
     commentCounter.textContent = `${parseInt(commentsCount.textContent, 10)} из ${commentsCount.textContent} комментариев`;
     buttonCommentsLoader.disabled = true;
   } else {
