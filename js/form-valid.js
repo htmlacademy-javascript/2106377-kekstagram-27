@@ -16,7 +16,6 @@ const body = document.querySelector('body');
 const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
   if (isEscapeKey (evt)) {
     closeSuccessMessage();
-    evt.stopPropagation();
   }
 };
 
@@ -139,7 +138,6 @@ function showSuccessMessage () {
     closeSuccessMessage();
   });
 }
-
 
 function showErrorMessage () {
   const fragmentErrorMessage = document.createDocumentFragment ();
