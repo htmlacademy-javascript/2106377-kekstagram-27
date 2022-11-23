@@ -82,7 +82,6 @@ const setFilterClick = (cb) => {
     if(evt.target.classList.contains('img-filters__button')){
       const button = evt.target;
       button.classList.toggle('img-filters__button--active');
-      clearThumbnails();
       cb(button.id);
     }
   });
