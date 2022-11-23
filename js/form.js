@@ -15,7 +15,7 @@ sliderEffects.classList.add('hidden');
 const inputEffectValue = document.querySelector('.effect-level__value');// input - поле значения уровня эффекта (скрытый)
 const effectsList = document.querySelector('.effects__list');//  ul  effects__list
 
-const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
+const onUploadingImageEscKeydown = (evt) => {
   if (isEscapeKey (evt)) {
     if (document.querySelector('.text__hashtags') === document.activeElement || document.querySelector('.text__description') === document.activeElement) {
       evt.stopPropagation();
@@ -31,7 +31,7 @@ function openFormImage () {
   //закрытие нажатием клавиши Esc.
   document.addEventListener ('keydown', onUploadingImageEscKeydown);
 }
-//слушатель на изменение input для загрузки изображения и формы
+
 inputUploadingImage.addEventListener('change',() => {
   openFormImage();
 });
@@ -45,7 +45,6 @@ function closeFormImage () {
   inputScaleValue.value = '100%';// сброс размер изображения
 }
 
-//слушатель на нажатие кнопки закрыть окно
 buttonUploadingCancel.addEventListener (('click'), () => {
   closeFormImage();
 });
@@ -70,9 +69,9 @@ buttonBigger.addEventListener ('click', () => {
 });
 
 //Эффект:
-inputEffectValue.value = 100;//начальное значение в поле ввода
+inputEffectValue.value = 100;
 
-//создаем слайдер с мин/макс значением шагом и начальной точкой ползунка
+
 noUiSlider.create(sliderEffects, {
   range: {
     min: 0,
@@ -94,10 +93,10 @@ noUiSlider.create(sliderEffects, {
 function onEffectChange (evt) {
   // console.log(inputEffectValue.value);
   if (evt.target.checked) {
-    sliderEffects.noUiSlider.on('update', () => {//события update будет вызвано при изменении положения слайдера, и выводить в консоль параметры колбэка.
+    sliderEffects.noUiSlider.on('update', () => {
 
       const effectValue = sliderEffects.noUiSlider.get();
-      inputEffectValue.value = effectValue;//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
+      inputEffectValue.value = effectValue;
       switch (evt.target.value) {
         case 'none':
           uploadPreviewImg.style.filter = null;
@@ -121,8 +120,8 @@ function onEffectChange (evt) {
       }
     });
     uploadPreviewImg.classList = `effects__preview--${evt.target.value}`;
-    if(evt.target.value === 'none') {//Для  оригинала фильтр уддаляется
-      sliderEffects.classList.add('hidden');//слайдер скрывается.
+    if(evt.target.value === 'none') {
+      sliderEffects.classList.add('hidden');
     }
     if(evt.target.value === 'chrome') {
       sliderEffects.classList.remove('hidden');
