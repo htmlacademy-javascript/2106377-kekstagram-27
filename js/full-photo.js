@@ -19,18 +19,40 @@ const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в пе
   }
 };
 
+// const getMoreComment = (evt) => {
+//   buttonCommentsLoader.disabled = true;
+//   evt.preventDefault();
+//   if(!buttonCommentsLoader.disabled) {
+//     commentCounter.textContent = `${parseInt(commentCounter.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`; //обновление числа показанных комментариев
+//     const hiddenComments = commentList.querySelectorAll('.hidden');//все li с классом hidden
+//     for (let i = 0; i < 5; i ++) {
+//       hiddenComments[i].classList.remove('hidden');
+//     }
+//     if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
+//     // if(commentList.length === null) {//если нет элементов с классом hidden кнопка загрузки не активна
+//       commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
+//       buttonCommentsLoader.disabled = true;
+//     }
+//   }
+// };
 const getMoreComment = (evt) => {
   evt.preventDefault();
-  if(!buttonCommentsLoader.disabled) {
-    commentCounter.textContent = `${parseInt(commentCounter.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`; //обновление числа показанных комментариев
+  if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
+    commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
+    buttonCommentsLoader.disabled = true;
+  } else {
     const hiddenComments = commentList.querySelectorAll('.hidden');//все li с классом hidden
-    for (let i = 0; i < 5; i ++) {
+    ////Посчитаем количество комментарие
+    const numberComments = commentList.children.length;
+    const currentComments = parseInt(commentCounter.textContent, 10) + 5;
+    const insertCount = currentComments > numberComments ? numberComments : currentComments;
+    //обновление числа показанных комментариев
+    //// 5 нужно вынести в переменную и нельзя всегда прибавлять по 5 - так как число комментариев не всегда кратно 5
+    commentCounter.textContent = `${insertCount} из ${commentsCount.textContent} комментариев`;
+    //// Опять таки мы не можем удалить класс у пяти элементов если их осталось меньше, проверяем на этот случай
+    const length = hiddenComments.length < 5 ? hiddenComments.length : 5;
+    for (let i = 0; i < length; i ++) {
       hiddenComments[i].classList.remove('hidden');
-    }
-    if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
-    // if(commentList.length === null) {//если нет элементов с классом hidden кнопка загрузки не активна
-      commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
-      buttonCommentsLoader.disabled = true;
     }
   }
 };

@@ -1,4 +1,5 @@
 const ALERT_SHOW_TIME = 4000;
+
 function getRandomPositiveInteger(min, max) {
   if (min < 0 && max < 0) {
     return NaN;
