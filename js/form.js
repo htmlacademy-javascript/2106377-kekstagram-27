@@ -95,27 +95,28 @@ function onEffectChange (evt) {
   // console.log(inputEffectValue.value);
   if (evt.target.checked) {
     sliderEffects.noUiSlider.on('update', () => {//события update будет вызвано при изменении положения слайдера, и выводить в консоль параметры колбэка.
-      // inputEffectValue.value = `${String(sliderEffects.noUiSlider.get())}%`;//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
-      inputEffectValue.value = sliderEffects.noUiSlider.get();//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
+
+      const effectValue = sliderEffects.noUiSlider.get();
+      inputEffectValue.value = effectValue;//в value поля ввода -актуальное значение слайдера - метод noUiSlider.get()
       switch (evt.target.value) {
         case 'none':
           uploadPreviewImg.style.filter = null;
           break;
         case 'chrome':
-          uploadPreviewImg.style = `filter: grayscale(${parseInt(inputEffectValue.value, 10)})`;
+          uploadPreviewImg.style = `filter: grayscale(${effectValue})`;
           break;
         case 'sepia':
-          uploadPreviewImg.style = `filter: sepia(${parseInt(inputEffectValue.value, 10)})`;
+          uploadPreviewImg.style = `filter: sepia(${effectValue})`;
           break;
         case 'marvin':
-          uploadPreviewImg.style = `filter: invert(${parseInt(inputEffectValue.value, 10)})`;
+          uploadPreviewImg.style = `filter: invert(${effectValue})`;
           break;
         case 'phobos':
-          uploadPreviewImg.style = `filter: blur(${parseInt(inputEffectValue.value, 10)})`;
+          uploadPreviewImg.style = `filter: blur(${effectValue})`;
           break;
 
         case 'heat':
-          uploadPreviewImg.style = `filter: brightness(${parseInt(inputEffectValue.value, 10)})`;
+          uploadPreviewImg.style = `filter: brightness(${effectValue})`;
           break;
       }
     });
@@ -123,7 +124,7 @@ function onEffectChange (evt) {
     if(evt.target.value === 'none') {//Для  оригинала фильтр уддаляется
       sliderEffects.classList.add('hidden');//слайдер скрывается.
     }
-    if(evt.target.value === 'chrome') {//Для эффекта «Хром»— filter: grayscale(0..1) с шагом 0.1
+    if(evt.target.value === 'chrome') {
       sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
@@ -132,9 +133,17 @@ function onEffectChange (evt) {
         },
         start: 1,
         step: 0.1,
+        format: {
+          to: function (value) {
+            return value;
+          },
+          from: function (value) {
+            return value;
+          },
+        }
       });
     }
-    if(evt.target.value === 'sepia') {//Для эффекта «Сепия»— filter: sepia(0..1) с шагом 0.1;
+    if(evt.target.value === 'sepia') {
       sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
@@ -143,9 +152,17 @@ function onEffectChange (evt) {
         },
         start: 1,
         step: 0.1,
+        format: {
+          to: function (value) {
+            return value;
+          },
+          from: function (value) {
+            return value;
+          },
+        }
       });
     }
-    if(evt.target.value === 'marvin') {//Для эффекта «Марвин»— filter: invert(0..100%) с шагом 1%;
+    if(evt.target.value === 'marvin') {
       sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
@@ -164,7 +181,7 @@ function onEffectChange (evt) {
         },
       });
     }
-    if(evt.target.value === 'phobos') {//Для эффекта «Фобос»— filter: blur(0..3px) с шагом 0.1px;
+    if(evt.target.value === 'phobos') {
       sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
@@ -183,7 +200,7 @@ function onEffectChange (evt) {
         },
       });
     }
-    if(evt.target.value === 'heat') {//Для эффекта «Зной»— filter: brightness(1..3) с шагом 0.1;
+    if(evt.target.value === 'heat') {
       sliderEffects.classList.remove('hidden');
       sliderEffects.noUiSlider.updateOptions({
         range: {
@@ -192,6 +209,14 @@ function onEffectChange (evt) {
         },
         start: 3,
         step: 0.1,
+        format: {
+          to: function (value) {
+            return value;
+          },
+          from: function (value) {
+            return value;
+          },
+        }
       });
     }
   }
