@@ -75,9 +75,26 @@ filtersContainer.classList.remove('img-filters--inactive');
 
 // обработчик изменения фильтров
 
+// const setFilterClick = (cb) => {
+//   filtersForm.querySelector('#filter-default').classList.remove('img-filters__button--active');
+//   filtersForm.addEventListener (('click'), (evt) => {
+
+//     if(evt.target.classList.contains('img-filters__button')){
+//       const button = evt.target;
+//       button.classList.toggle('img-filters__button--active');
+//       cb(button.id);
+//     }
+//   });
+// };
+
 const setFilterClick = (cb) => {
   filtersForm.querySelector('#filter-default').classList.remove('img-filters__button--active');
   filtersForm.addEventListener (('click'), (evt) => {
+    // ты тут удаляй класс, если он есть на кнопках. Например
+
+    filtersForm.querySelectorAll('.img-filters__button').forEach((button) => {
+      button.classList.remove('img-filters__button--active');
+    });
 
     if(evt.target.classList.contains('img-filters__button')){
       const button = evt.target;
