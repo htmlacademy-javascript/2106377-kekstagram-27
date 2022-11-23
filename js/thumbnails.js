@@ -7,12 +7,27 @@ const buttonFilterDefault = document.querySelector('#filter-default');//кноп
 const buttonFilterRandom = document.querySelector('#filter-random');//кнопка случайные
 const buttonFilterDiscussed = document.querySelector('#filter-discussed');//кнопка обсуждаемые
 
-// const comparePhotos = (a, b) => b.comments.length - a.comments.length;
+const comparePhotos = (a, b) => b.comments.length - a.comments.length;
 
-//вариант для 10 случайных неповторяющихся
 const renderThumbnails = (similarPhoto) => {
   const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
+  similarPhoto.forEach ((desc) => {
+    const photoElement = templateUsersPhoto.cloneNode(true);// клон шаблона
+    photoElement.querySelector('.picture__img').src = desc.url;// Адрес изображения url подставьте как атрибут src изображения.
+    photoElement.querySelector('.picture__likes').textContent = desc.likes;// Количество лайков likes выведите в блок .picture__likes.
+    photoElement.querySelector('.picture__comments').textContent = desc.comments.length; // Количество комментариев comments выведите в блок .picture__comments.
+    photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
+    similarPhotoFragment.append(photoElement);// добавляю клоннированный элемент во фрагмент
+  });
 
+  containerUsersPhoto.innerHTML = '';
+  containerUsersPhoto.append(similarPhotoFragment);// добавляю клоннированный элемент в контейнер .pictures
+
+};
+
+//вариант для 10 случайных неповторяющихся
+const renderRandomThumbnails = (similarPhoto) => {
+  const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
   similarPhoto
     .slice()
     .sort(() => 0.5 - Math.random())
@@ -31,24 +46,24 @@ const renderThumbnails = (similarPhoto) => {
 };
 
 //вараинт для обсуждаемых
-// const renderThumbnails = (similarPhoto) => {
-//   const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
+const renderCommentThumbnails = (similarPhoto) => {
+  const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
 
-//   similarPhoto
-//     .slice()
-//     .sort(comparePhotos)
-//     .forEach ((desc) => {
-//       const photoElement = templateUsersPhoto.cloneNode(true);
-//       photoElement.querySelector('.picture__img').src = desc.url;
-//       photoElement.querySelector('.picture__likes').textContent = desc.likes;
-//       photoElement.querySelector('.picture__comments').textContent = desc.comments.length;
-//       photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
-//       similarPhotoFragment.append(photoElement);// добавляю клоннированный элемент во фрагмент
-//     });
+  similarPhoto
+    .slice()
+    .sort(comparePhotos)
+    .forEach ((desc) => {
+      const photoElement = templateUsersPhoto.cloneNode(true);
+      photoElement.querySelector('.picture__img').src = desc.url;
+      photoElement.querySelector('.picture__likes').textContent = desc.likes;
+      photoElement.querySelector('.picture__comments').textContent = desc.comments.length;
+      photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
+      similarPhotoFragment.append(photoElement);// добавляю клоннированный элемент во фрагмент
+    });
 
-//   // containerUsersPhoto.innerHTML = '';
-//   containerUsersPhoto.append(similarPhotoFragment);
-// };
+  containerUsersPhoto.innerHTML = '';
+  containerUsersPhoto.append(similarPhotoFragment);
+};
 
 // блок филтров фото
 const filtersContainer = document.querySelector('.img-filters');
@@ -82,6 +97,6 @@ const setDiscussedClick = (cb) => {
   });
 };
 
-export {renderThumbnails, setDefaultClick, setRandomClick, setDiscussedClick};
+export {renderThumbnails, renderRandomThumbnails, renderCommentThumbnails, setDefaultClick, setRandomClick, setDiscussedClick};
 
 

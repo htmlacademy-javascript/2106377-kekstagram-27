@@ -19,26 +19,10 @@ const onUploadingImageEscKeydown = (evt) => {//закрытие по ESC в пе
   }
 };
 
-// const getMoreComment = (evt) => {
-//   buttonCommentsLoader.disabled = true;
-//   evt.preventDefault();
-//   if(!buttonCommentsLoader.disabled) {
-//     commentCounter.textContent = `${parseInt(commentCounter.textContent, 10) + 5} из ${commentsCount.textContent} комментариев`; //обновление числа показанных комментариев
-//     const hiddenComments = commentList.querySelectorAll('.hidden');//все li с классом hidden
-//     for (let i = 0; i < 5; i ++) {
-//       hiddenComments[i].classList.remove('hidden');
-//     }
-//     if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
-//     // if(commentList.length === null) {//если нет элементов с классом hidden кнопка загрузки не активна
-//       commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
-//       buttonCommentsLoader.disabled = true;
-//     }
-//   }
-// };
 const getMoreComment = (evt) => {
   evt.preventDefault();
   if(commentList.querySelector('.social__comment.hidden') === null) {//если нет элементов с классом hidden кнопка загрузки не активна
-    commentCounter.textContent = `${parseInt(commentCounter.textContent, 10)} из ${commentsCount.textContent} комментариев`;
+    commentCounter.textContent = `${parseInt(commentsCount.textContent, 10)} из ${commentsCount.textContent} комментариев`;
     buttonCommentsLoader.disabled = true;
   } else {
     const hiddenComments = commentList.querySelectorAll('.hidden');//все li с классом hidden
@@ -57,12 +41,11 @@ const getMoreComment = (evt) => {
   }
 };
 
-// проблема  с комментами. кнопка 'загрузить еще' блокируется, на действие при клике  продолжает
-// происходить, счетчик комментариев, нужно проверять не задизейблена ли кнопка, и если задизаблена тогда прекращать грузить комменты
 
 //отрисовка полноразмерного фото
 const drawFullPhoto = (desc, evt) => {
   evt.preventDefault();
+
   viewFullPhoto.classList.remove('hidden');
   viewPhotoNoScroll.classList.add('modal-open');
   document.addEventListener ('keydown', onUploadingImageEscKeydown);
@@ -84,6 +67,14 @@ const drawFullPhoto = (desc, evt) => {
     similarCommentFragment.append(itemElement);
   });
 
+  if(commentsCount.textContent > 5 ){
+    commentCounter.textContent = `5 из ${commentsCount.textContent} комментариев`;
+    buttonCommentsLoader.disabled = false;
+  } else {
+    commentCounter.textContent = `${commentsCount.textContent} из ${commentsCount.textContent} комментариев`;
+    buttonCommentsLoader.disabled = true;
+  }
+
   commentList.innerHTML = '';
   commentList.append(similarCommentFragment);
 
@@ -91,7 +82,7 @@ const drawFullPhoto = (desc, evt) => {
     commentListItem[i].classList.add('hidden');
   }
 
-  buttonCommentsLoader.addEventListener('click', () => getMoreComment(evt));
+  buttonCommentsLoader.addEventListener('click', getMoreComment);
 };
 
 // закрытие окна
@@ -100,6 +91,7 @@ function closeFullPhoto () {
   viewPhotoNoScroll.classList.remove('modal-open');
   commentCounter.classList.remove('hidden');
   newCommentLoad.classList.remove('hidden');
+  buttonCommentsLoader.removeEventListener('click', getMoreComment);
   document.removeEventListener ('keydown', onUploadingImageEscKeydown);
 }
 

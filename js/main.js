@@ -6,7 +6,7 @@ import './form-valid.js';
 import './Uploading-photo.js';
 import {closeFormImage} from './form.js';
 import {setImageFormSubmit} from './form-valid.js';
-import {renderThumbnails, setDefaultClick, setRandomClick, setDiscussedClick} from './thumbnails.js';
+import {renderThumbnails, renderRandomThumbnails, renderCommentThumbnails, setDefaultClick, setRandomClick, setDiscussedClick} from './thumbnails.js';
 import {getData} from './api.js';
 import {debounce} from './util.js';
 
@@ -19,11 +19,11 @@ getData((photos) => {
     RERENDER_DELAY,
   ));
   setRandomClick(debounce(
-    () => renderThumbnails(photos),
+    () => renderRandomThumbnails(photos),
     RERENDER_DELAY,
   ));
   setDiscussedClick(debounce(
-    () => renderThumbnails(photos),
+    () => renderCommentThumbnails(photos),
     RERENDER_DELAY,
   ));
 });

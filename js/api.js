@@ -11,7 +11,6 @@ const getData = (onSuccess) => {
     .then((response) => response.json())//извлекает данные и преобразовывает js
     .then((photos) => {
       onSuccess(photos);//отрисовка фото по данным с сервера
-      console.log(photos);
     })
     .catch(() => {//если сервер не доступен
       showAlert('Не удалоь загрузить данные с сервера. Попробуйте еще раз');
