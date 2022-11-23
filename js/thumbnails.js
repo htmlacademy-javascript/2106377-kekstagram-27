@@ -19,7 +19,7 @@ const renderThumbnails = (similarPhoto, button = 'filter-default') => {
         photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
         similarPhotoFragment.append(photoElement);// добавляю клоннированный элемент во фрагмент
       });
-      // containerUsersPhoto.innerHTML = '';
+
       document.querySelectorAll('.picture').forEach((elem) => elem.remove());
       containerUsersPhoto.append(similarPhotoFragment);// добавляю клоннированный элемент в контейнер .picture
       break;
@@ -36,6 +36,7 @@ const renderThumbnails = (similarPhoto, button = 'filter-default') => {
           photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
           similarPhotoFragment.append(photoElement);// добавляю клоннированный элемент во фрагмент
         });
+
       document.querySelectorAll('.picture').forEach((elem) => elem.remove());
       containerUsersPhoto.append(similarPhotoFragment);// добавляю клоннированный элемент в контейнер .pictures
       break;
@@ -48,6 +49,7 @@ const renderThumbnails = (similarPhoto, button = 'filter-default') => {
           photoElement.querySelector('.picture__img').src = desc.url;
           photoElement.querySelector('.picture__likes').textContent = desc.likes;
           photoElement.querySelector('.picture__comments').textContent = desc.comments.length;
+          photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
           similarPhotoFragment.append(photoElement);// добавляю клоннированный элемент во фрагмент
         });
       document.querySelectorAll('.picture').forEach((elem) => elem.remove());
@@ -56,10 +58,6 @@ const renderThumbnails = (similarPhoto, button = 'filter-default') => {
   }
 };
 
-// const pic = document.queryeSelectorAll('.picture');
-// console.log(pic);
-// // pic.forEach((elem) => elem.remove());
-
 // блок филтров фото
 const filtersContainer = document.querySelector('.img-filters');
 filtersContainer.classList.remove('img-filters--inactive');
@@ -67,7 +65,6 @@ filtersContainer.classList.remove('img-filters--inactive');
 const setFilterClick = (cb) => {
   filtersForm.querySelector('#filter-default').classList.remove('img-filters__button--active');
   filtersForm.addEventListener (('click'), (evt) => {
-    // ты тут удаляй класс, если он есть на кнопках. Например
 
     filtersForm.querySelectorAll('.img-filters__button').forEach((button) => {
       button.classList.remove('img-filters__button--active');
