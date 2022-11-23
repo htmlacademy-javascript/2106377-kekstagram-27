@@ -24,6 +24,7 @@ const onUploadingImageEscKeydown = (evt) => {
     }
   }
 };
+
 //открытие формы ф-я
 function openFormImage () {
   uploadingImage.classList.remove('hidden');
