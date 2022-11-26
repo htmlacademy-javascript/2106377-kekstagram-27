@@ -1,15 +1,5 @@
 const ALERT_SHOW_TIME = 4000;
 
-function getRandomPositiveInteger(min, max) {
-  if (min < 0 && max < 0) {
-    return NaN;
-  }
-  const firstNum = Math.ceil(min);
-  const lastNum = Math.floor(max);
-  const result = Math.floor(Math.random() * (lastNum - firstNum + 1)) + firstNum;
-  return result;
-}
-
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const showAlert = (message) => {
@@ -45,4 +35,4 @@ function debounce (callback, timeoutDelay = 500) {
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
 }
-export{getRandomPositiveInteger, isEscapeKey, showAlert, debounce};
+export{isEscapeKey, showAlert, debounce};

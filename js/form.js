@@ -1,5 +1,14 @@
+/* eslint-disable radix */
 import{viewPhotoNoScroll} from './full-photo.js';
 import{isEscapeKey} from './util.js';
+
+const DEFAULT_VALUE_CONTROL = 100;
+const MIN_VALUE_CONTROL = 25;
+const MAX_VALUE_CONTROL = 100;
+const STEP_CONTROL_VALUE = 25;
+
+const START_EFFECT_VALUE = 100;//стартове занчение кнопки эффекта inputEffectValue.value
+
 const uploadingImage = document.querySelector('.img-upload__overlay');//блок редактирования изображения
 const inputUploadingImage = document.querySelector('#upload-file'); //input для загрузки изображения и формы
 
@@ -15,9 +24,12 @@ sliderEffects.classList.add('hidden');
 const inputEffectValue = document.querySelector('.effect-level__value');// input - поле значения уровня эффекта (скрытый)
 const effectsList = document.querySelector('.effects__list');//  ul  effects__list
 
+const hashtagsInput = document.querySelector('.text__hashtags');
+const descriptionInput = document.querySelector('.text__description');
+
 const onUploadingImageEscKeydown = (evt) => {
   if (isEscapeKey (evt)) {
-    if (document.querySelector('.text__hashtags') === document.activeElement || document.querySelector('.text__description') === document.activeElement) {
+    if (hashtagsInput === document.activeElement || descriptionInput === document.activeElement) {
       evt.stopPropagation();
     } else {
       closeFormImage();
@@ -29,8 +41,9 @@ const onUploadingImageEscKeydown = (evt) => {
 function openFormImage () {
   uploadingImage.classList.remove('hidden');
   viewPhotoNoScroll.classList.add('modal-open');
-  //закрытие нажатием клавиши Esc.
-  document.addEventListener ('keydown', onUploadingImageEscKeydown);
+  buttonBigger.disabled = true;
+  document.addEventListener ('keydown', onUploadingImageEscKeydown);//закрытие нажатием клавиши Esc.
+
 }
 
 inputUploadingImage.addEventListener('change',() => {
@@ -41,9 +54,13 @@ inputUploadingImage.addEventListener('change',() => {
 function closeFormImage () {
   uploadingImage.classList.add('hidden');
   viewPhotoNoScroll.classList.remove('modal-open');
-  document.removeEventListener ('keydown', onUploadingImageEscKeydown);
   inputUploadingImage.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
-  inputScaleValue.value = '100%';// сброс размер изображения
+  inputScaleValue.value = `${(DEFAULT_VALUE_CONTROL) }%`;// сброс размер изображения DEFAULT_VALUE_CONTROL
+  uploadPreviewImg.style.transform = `scale(${1})`;
+  uploadPreviewImg.style.filter = null;
+  sliderEffects.classList.add('hidden');
+
+  document.removeEventListener ('keydown', onUploadingImageEscKeydown);
 }
 
 buttonUploadingCancel.addEventListener (('click'), () => {
@@ -52,25 +69,27 @@ buttonUploadingCancel.addEventListener (('click'), () => {
 
 // Масштаб:
 buttonSmaller.addEventListener ('click', () => {
-  inputScaleValue.value = `${parseInt(inputScaleValue.value, 10) - 25}%`;
-  uploadPreviewImg.style = `transform: scale(${parseInt(inputScaleValue.value, 10) / 100})`;
-  if (inputScaleValue.value === `${parseInt(25, 10)}%`) {
+  inputScaleValue.value = `${parseInt(inputScaleValue.value) - STEP_CONTROL_VALUE}%`;//привожу значение input type="text" (100% - строчное значение) к числу -> вычисления -> преобразовние вычислений в строку  в value input type="text"
+  uploadPreviewImg.style.transform = `scale(${inputScaleValue.value})`;
+
+  if (inputScaleValue.value === `${MIN_VALUE_CONTROL}%`) {
     buttonSmaller.disabled = true;
     buttonBigger.disabled = false;
   }
 });
 
 buttonBigger.addEventListener ('click', () => {
-  inputScaleValue.value = `${parseInt(inputScaleValue.value, 10) + 25}%`;
-  uploadPreviewImg.style = `transform: scale(${parseInt(inputScaleValue.value, 10) / 100})`;
-  if (inputScaleValue.value === `${parseInt(100, 10)}%`) {
+  inputScaleValue.value = `${parseInt(inputScaleValue.value) + STEP_CONTROL_VALUE}%`;
+  uploadPreviewImg.style.transform = `scale(${inputScaleValue.value})`;
+
+  if (inputScaleValue.value === `${MAX_VALUE_CONTROL}%`) {
     buttonBigger.disabled = true;
     buttonSmaller.disabled = false;
   }
 });
 
 //Эффект:
-inputEffectValue.value = 100;
+inputEffectValue.value = START_EFFECT_VALUE;
 
 
 noUiSlider.create(sliderEffects, {
@@ -103,24 +122,25 @@ function onEffectChange (evt) {
           uploadPreviewImg.style.filter = null;
           break;
         case 'chrome':
-          uploadPreviewImg.style = `filter: grayscale(${effectValue})`;
+          uploadPreviewImg.style.filter = `grayscale(${effectValue})`;
           break;
         case 'sepia':
-          uploadPreviewImg.style = `filter: sepia(${effectValue})`;
+          uploadPreviewImg.style.filter = `sepia(${effectValue})`;
           break;
         case 'marvin':
-          uploadPreviewImg.style = `filter: invert(${effectValue})`;
+          uploadPreviewImg.style.filter = `invert(${effectValue})`;
           break;
         case 'phobos':
-          uploadPreviewImg.style = `filter: blur(${effectValue})`;
+          uploadPreviewImg.style.filter = `blur(${effectValue})`;
           break;
 
         case 'heat':
-          uploadPreviewImg.style = `filter: brightness(${effectValue})`;
+          uploadPreviewImg.style.filter = `brightness(${effectValue})`;
           break;
       }
     });
-    uploadPreviewImg.classList = `effects__preview--${evt.target.value}`;
+    // uploadPreviewImg.classList = `effects__preview--${evt.target.value}`;
+    // uploadPreviewImg.classList.add('`effects__preview--${evt.target.value}`');
     if(evt.target.value === 'none') {
       sliderEffects.classList.add('hidden');
     }
