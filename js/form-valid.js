@@ -2,21 +2,32 @@ import { sendData } from './api.js';
 import{isEscapeKey} from './util.js';
 import {openFormImage} from './form.js';
 
+
 const MAX_COUNT_HASHTAG = 5;//max кол-во
 const MAX_CHARACTERS_HASHTAG = 20;//max символов
-const MIN_CHARACTERS_VALUE_HASHTAG = 2;// min символов в поле хэштег
-const MAX_CHARACTERS_VALUE_COMMENT = 2;// min символов в поле коммент
+const MIN_CHARACTERS_HASHTAG = 2;// min символов в поле хэштег
+const MAX_CHARACTERS_COMMENT = 140;// max символов в поле коммент
 
+const body = document.querySelector('body');
 const ImageForm = document.querySelector('.img-upload__form');//форма загрузки фото
-const hashtagsWrapper = ImageForm.querySelector ('.img-upload__field-wrapper');//div-родитель для поля хэштегов
-const hashtagsField = ImageForm.querySelector('.text__hashtags');//поле загрузки хештега
 
+const hashtagsField = ImageForm.querySelector('.text__hashtags');//поле загрузки хештега
 const commentField = document.querySelector('.text__description');//поле ввода коммен-я
+
 const buttonSubmit = document.querySelector('.img-upload__submit');//кнопка отправки данных на сервер
 
-const regexp = /^#[a-zа-яё]{1,19}$/i;
-const errorMessageHashtags = document.createElement('div');//элемент с сообщением о верном заполнении
-const body = document.querySelector('body');
+const regexp = /^#[a-zа-яё0-9]{1,20}$/i;
+
+
+// const isTextFieldFocused = () =>
+//   document.activeElement === hashtagsField ||
+//   document.activeElement === commentField;
+
+// // function onEscapeDown(evt) {
+// //   if (isEscapeKey (evt) && !isTextFieldFocused()) {
+// //    evt.stopPropagation();
+// //   }
+// // };
 
 const onSuccesMessageSubmitEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
   if (isEscapeKey (evt)) {
@@ -50,54 +61,82 @@ const onErrorMessageSubmitClick = (evt) => {//закрытие по click вне
 
 // валидация полей хэштегов и комментов
 const pristine = new Pristine(ImageForm, {
-  classTo: 'img-upload__error-hashtags',
-  errorClass: 'img-upload__error-hashtags--invalid',
-  successClass: 'img-upload__error-hashtags--valid',
-  errorTextParent: 'img-upload__error-hashtags',
-  errorTextTag: 'div',
-  errorTextClass: 'img-upload__error-text',
-});
+  classTo: 'img-upload__text',//'img-upload__field-wrapper'
+  errorClass: 'img-upload__text--invalid',//нет
+  successClass: 'img-upload__text--valid',//нет
+  errorTextParent: 'img-upload__text',//'img-upload__field-wrapper'
+  errorTextTag: 'div',//нет
+  errorTextClass: 'img-upload__text__error-text',//'img-upload__field-wrapper__error'
+},
+true
+);
 
 //проверка поля хэштегов по регулярному выражению
 let hashtags = [];
 
-function validateHashtags (value) {
+function splitHashtagString () {
   hashtags = hashtagsField.value.split(' ');
-  hashtagsWrapper.append(errorMessageHashtags);
-  buttonSubmit.disabled = false;
-
-  if (hashtags.length > MAX_COUNT_HASHTAG) {
-    errorMessageHashtags.textContent = 'не более 5 хэштегов';
-    return false;
-  }
-
-  if (new Set(hashtags).size !== hashtags.length) {
-    errorMessageHashtags.textContent = 'хэштеги не должны повторяться';
-    return false;
-  }
-
-  for(let i = 0; i < hashtags.length; i++) {
-    if (regexp.test(hashtags[i]) === false) {
-      errorMessageHashtags.textContent = 'только буквы и числа, хэштеги разделяются пробелом';
-      return false;
-    }
-    if (hashtags[i].length > MAX_CHARACTERS_HASHTAG) {
-      errorMessageHashtags.textContent = 'хештег не более 20 символов';
-      return false;
-    }
-  }
-  return (value.length >= MIN_CHARACTERS_VALUE_HASHTAG);
 }
+
+const validateCountHashtags = () => {
+  splitHashtagString();
+  return hashtags.length <= MAX_COUNT_HASHTAG;
+};
+
+const validateLengthHashtags = () => new Set(hashtags).size === hashtags.length;
+
+const validateTextHashtags = () => {
+  splitHashtagString();
+  for(let i = 0; i < hashtags.length; i++) {
+    // console.log(hashtags.length);
+    return (regexp.test(hashtags[i]) === true);
+  }
+};
+
+const validateMinLengthHashtags = () => {
+  splitHashtagString();
+  for(let i = 0; i < hashtags.length; i++) {
+    return (hashtags[i].length >= MIN_CHARACTERS_HASHTAG);
+  }
+};
+
+const validateMaxLengthHashtags = () => {
+  splitHashtagString();
+  for(let i = 0; i < hashtags.length; i++) {
+    return (hashtags[i].length <= MAX_CHARACTERS_HASHTAG);
+  }
+};
 
 //валидация поля хештегов
 pristine.addValidator(
-  hashtagsField,//поле проверки
-  validateHashtags, //функция проверки
+  hashtagsField,
+  validateCountHashtags,
+  'не более 5 хэштегов'
+);
+pristine.addValidator(
+  hashtagsField,
+  validateLengthHashtags,
+  'хэштеги не должны повторяться'
+);
+pristine.addValidator(
+  hashtagsField,
+  validateTextHashtags,
+  'только буквы и числа, хэштеги разделяются пробелом'
+);
+pristine.addValidator(
+  hashtagsField,
+  validateMaxLengthHashtags,
+  'хештег не более 20 символов'
+);
+pristine.addValidator(
+  hashtagsField,
+  validateMinLengthHashtags,
+  'не может состоять только из одной решётки'
 );
 
 //комменты
 function validateComments (value) {
-  return value.length < MAX_CHARACTERS_VALUE_COMMENT;
+  return value.length < MAX_CHARACTERS_COMMENT;
 }
 //валидация поля коментов
 pristine.addValidator(
@@ -105,12 +144,10 @@ pristine.addValidator(
   validateComments,
   'Не более 140 символов'
 );
-
-commentField.addEventListener ('input', () => {
-  if (commentField.value.length === MAX_CHARACTERS_VALUE_COMMENT) {
-    buttonSubmit.disabled = true;
-  }
-});
+const resetPristine = () => {
+  const a = document.querySelector('.img-upload__text__error-text');
+  a.textContent = '';
+};
 
 //блокировка кнопки во время отправки и разблокировние после
 const blockButtonSubmit = () => {
@@ -171,6 +208,20 @@ function showErrorMessage () {
 
   buttonError.addEventListener ('click', closeErrorMessage);//закрытие блока неуспешной отправки
 }
+// const showModal = () => {
+//   overlay.classList.remove('hidden');
+//   body.classList.add('modal-open');
+//   document.addEventListener('keydown', onEscapeDown);
+// };
+// const hideModal = () => {
+//   Form.reset();
+//   resetScale();
+//   resetEffects();
+//   pristine.reset();
+//   overlay.classList.add('hidden');
+//   body.classList.remove('modal-open');
+//   document.removeEventListener('keydown', onEscapeDown);
+// };
 
 //обработчик отправки с параметром-клбэком (в случае успешной отправки)
 const setImageFormSubmit = (onSuccess) => {
@@ -200,4 +251,4 @@ const setImageFormSubmit = (onSuccess) => {
   });
 };
 
-export{setImageFormSubmit};
+export{setImageFormSubmit, resetPristine};

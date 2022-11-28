@@ -3,11 +3,26 @@ const RANDOM_PHOTO_COUNT = 10;
 const containerUsersPhoto = document.querySelector('.pictures');// контейнер для изображений др пользователей
 const templateUsersPhoto = document.querySelector('#picture').content.querySelector('.picture');// шаблон
 const filtersForm = document.querySelector('.img-filters__form');//форма с кнопкками филтров
-const filterDefaultButton = filtersForm.querySelector('#filter-default');//кнопка "по умолчанию" -все фото
+// const filterDefaultButton = filtersForm.querySelector('#filter-default');//кнопка "по умолчанию" -все фото
 const filtertButtons = filtersForm.querySelectorAll('.img-filters__button');//все кнопки выбора фото
 const filtersContainer = document.querySelector('.img-filters');
 
 const comparePhotos = (a, b) => b.comments.length - a.comments.length;
+
+// const renderPhotos = (items) => {
+//   const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
+//   items.forEach ((desc) => {
+//     const photoElement = templateUsersPhoto.cloneNode(true);
+//     photoElement.querySelector('.picture__img').src = desc.url;
+//     photoElement.querySelector('.picture__likes').textContent = desc.likes;
+//     photoElement.querySelector('.picture__comments').textContent = desc.comments.length;
+//     photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
+//     similarPhotoFragment.append(photoElement);
+//   });
+
+//   document.querySelectorAll('.picture').forEach((elem) => elem.remove());
+//   containerUsersPhoto.append(similarPhotoFragment);
+// };
 
 const renderThumbnails = (similarPhoto, button = 'filter-default') => {
   const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
