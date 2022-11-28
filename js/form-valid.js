@@ -16,48 +16,8 @@ const commentField = document.querySelector('.text__description');//поле в�
 
 const buttonSubmit = document.querySelector('.img-upload__submit');//кнопка отправки данных на сервер
 
-const regexp = /^#[a-zа-яё0-9]{1,20}$/i;
+const regexp = /^#[a-zа-яё0-9]{1,19}$/i;
 
-
-// const isTextFieldFocused = () =>
-//   document.activeElement === hashtagsField ||
-//   document.activeElement === commentField;
-
-// // function onEscapeDown(evt) {
-// //   if (isEscapeKey (evt) && !isTextFieldFocused()) {
-// //    evt.stopPropagation();
-// //   }
-// // };
-
-const onSuccesMessageSubmitEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
-  if (isEscapeKey (evt)) {
-    closeSuccessMessage();
-  }
-};
-const onErrorMessageSubmitEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
-  if (isEscapeKey (evt)) {
-    closeErrorMessage();
-    openFormImage();
-  }
-};
-
-const onSuccesMessageSubmitClick = (evt) => {//закрытие по click вне модалки
-  const SuccessContainer = body.querySelector('.success');
-  const SuccessModal = SuccessContainer.querySelector('.success__inner');
-
-  if (!SuccessModal.contains(evt.target)){
-    closeSuccessMessage();
-  }
-};
-const onErrorMessageSubmitClick = (evt) => {//закрытие по click вне модалки
-  const ErrorContainer = document.querySelector('.error');
-  const ErrorModal = ErrorContainer.querySelector('.error__inner');
-
-  if (!ErrorModal.contains(evt.target)){
-    closeErrorMessage();
-    openFormImage();
-  }
-};
 
 // валидация полей хэштегов и комментов
 const pristine = new Pristine(ImageForm, {
@@ -86,25 +46,34 @@ const validateCountHashtags = () => {
 const validateLengthHashtags = () => new Set(hashtags).size === hashtags.length;
 
 const validateTextHashtags = () => {
+  hashtags = hashtagsField.value.trim().split(' ');
   splitHashtagString();
   for(let i = 0; i < hashtags.length; i++) {
-    // console.log(hashtags.length);
-    return (regexp.test(hashtags[i]) === true);
+    if (!regexp.test(hashtags[i]) === true && hashtags[i] !== '') {
+      return false;
+    }
   }
+  return true;
 };
 
 const validateMinLengthHashtags = () => {
   splitHashtagString();
   for(let i = 0; i < hashtags.length; i++) {
-    return (hashtags[i].length >= MIN_CHARACTERS_HASHTAG);
+    if (hashtags[i].length < MIN_CHARACTERS_HASHTAG && hashtags[i] === '#') {
+      return false;
+    }
   }
+  return true;
 };
 
 const validateMaxLengthHashtags = () => {
   splitHashtagString();
   for(let i = 0; i < hashtags.length; i++) {
-    return (hashtags[i].length <= MAX_CHARACTERS_HASHTAG);
+    if (hashtags[i].length >= MAX_CHARACTERS_HASHTAG){
+      return false;
+    }
   }
+  return true;
 };
 
 //валидация поля хештегов
@@ -121,7 +90,8 @@ pristine.addValidator(
 pristine.addValidator(
   hashtagsField,
   validateTextHashtags,
-  'только буквы и числа, хэштеги разделяются пробелом'
+  //// поправила текст, а то будет выводится ошибка если первая буква, и не понятно что не так
+  'хэштеги начинаются с решетки и состоят только из букв и чисел, хэштеги разделяются пробелом'
 );
 pristine.addValidator(
   hashtagsField,
@@ -144,10 +114,6 @@ pristine.addValidator(
   validateComments,
   'Не более 140 символов'
 );
-const resetPristine = () => {
-  const a = document.querySelector('.img-upload__text__error-text');
-  a.textContent = '';
-};
 
 //блокировка кнопки во время отправки и разблокировние после
 const blockButtonSubmit = () => {
@@ -160,14 +126,23 @@ const unblockButtonSubmit = () => {
   buttonSubmit.textContent = 'Опубликовать';
 };
 
-//показ блока успешной отправки
-function closeSuccessMessage () {
-  document.querySelector('.success').classList.add('hidden');
-  document.removeEventListener ('keydown', onSuccesMessageSubmitEscKeydown);
-  document.removeEventListener( 'click', onSuccesMessageSubmitClick);
-}
 
-function showSuccessMessage () {
+//показ блока успешной отправки
+
+const onSuccesMessageSubmitEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
+  if (isEscapeKey (evt)) {
+    closeErrorMessage();
+  }
+};
+const onSuccesMessageSubmitClick = (evt) => {//закрытие по click вне модалки
+  const SuccessContainer = body.querySelector('.success');
+  const SuccessModal = SuccessContainer.querySelector('.success__inner');
+
+  if (!SuccessModal.contains(evt.target)){
+    closeSuccessMessage();
+  }
+};
+const showSuccessMessage = () => {
   const fragmentSuccessMessage = document.createDocumentFragment ();
   const templateSuccessMessage = document.querySelector('#success').content.querySelector('.success');
 
@@ -175,24 +150,38 @@ function showSuccessMessage () {
   fragmentSuccessMessage.append(element);
   body.append(fragmentSuccessMessage);
 
-  document.addEventListener ('keydown', onSuccesMessageSubmitEscKeydown);
-
-  document.addEventListener( 'click', onSuccesMessageSubmitClick);
-
   const buttonSuccess = document.querySelector('.success__button');//rryjпка закрытия сообщения
 
+  document.addEventListener ('keydown', onSuccesMessageSubmitEscKeydown);
+  document.addEventListener('click', onSuccesMessageSubmitClick);
   buttonSuccess.addEventListener ('click', closeSuccessMessage);//закрытие блока успешной отправки по [X]
+};
+
+function closeSuccessMessage () {
+  document.querySelector('.success').classList.add('hidden');
+  document.removeEventListener ('keydown', onSuccesMessageSubmitEscKeydown);
+  document.removeEventListener( 'click', onSuccesMessageSubmitClick);
 }
 
-//показ блока неуспешной отправки
-function closeErrorMessage () {
-  document.querySelector('.error').classList.add('hidden');
-  document.removeEventListener ('keydown', onErrorMessageSubmitEscKeydown);
-  document.removeEventListener( 'click', onErrorMessageSubmitClick);
-}
+//показ блока успешной отправки
+const onErrorMessageSubmitEscKeydown = (evt) => {//закрытие по ESC в перемнной(ф-я)
+  if (isEscapeKey (evt)) {
+    closeErrorMessage();
+    openFormImage();
+  }
+};
 
+const onErrorMessageSubmitClick = (evt) => {//закрытие по click вне модалки
+  const ErrorContainer = document.querySelector('.error');
+  const ErrorModal = ErrorContainer.querySelector('.error__inner');
 
-function showErrorMessage () {
+  if (!ErrorModal.contains(evt.target)){
+    closeErrorMessage();
+    openFormImage();
+  }
+};
+
+const showErrorMessage = () => {
   const fragmentErrorMessage = document.createDocumentFragment ();
   const templateErrorMessage = document.querySelector('#error').content.querySelector('.error');
 
@@ -200,28 +189,21 @@ function showErrorMessage () {
   fragmentErrorMessage.append(element);
   body.append(fragmentErrorMessage);
 
-  document.addEventListener ('keydown', onErrorMessageSubmitEscKeydown);
-
-  document.addEventListener( 'click', onErrorMessageSubmitClick);
-
   const buttonError = document.querySelector('.error__button');
+  // const modalConainer = document.querySelector('.error');
+  // modalConainer.classList.add('modal');
 
+  document.addEventListener ('keydown', onErrorMessageSubmitEscKeydown);
+  document.addEventListener( 'click', onErrorMessageSubmitClick);
   buttonError.addEventListener ('click', closeErrorMessage);//закрытие блока неуспешной отправки
+};
+
+function closeErrorMessage () {
+  document.querySelector('.error').classList.add('hidden');
+  document.removeEventListener ('keydown', onErrorMessageSubmitEscKeydown);
+  document.removeEventListener( 'click', onErrorMessageSubmitClick);
 }
-// const showModal = () => {
-//   overlay.classList.remove('hidden');
-//   body.classList.add('modal-open');
-//   document.addEventListener('keydown', onEscapeDown);
-// };
-// const hideModal = () => {
-//   Form.reset();
-//   resetScale();
-//   resetEffects();
-//   pristine.reset();
-//   overlay.classList.add('hidden');
-//   body.classList.remove('modal-open');
-//   document.removeEventListener('keydown', onEscapeDown);
-// };
+
 
 //обработчик отправки с параметром-клбэком (в случае успешной отправки)
 const setImageFormSubmit = (onSuccess) => {
@@ -246,9 +228,7 @@ const setImageFormSubmit = (onSuccess) => {
         new FormData(evt.target),
       );
     }
-    // ImageForm.reset();
-    buttonSubmit.disabled = true;
   });
 };
 
-export{setImageFormSubmit, resetPristine};
+export{setImageFormSubmit, pristine};

@@ -9,21 +9,6 @@ const filtersContainer = document.querySelector('.img-filters');
 
 const comparePhotos = (a, b) => b.comments.length - a.comments.length;
 
-// const renderPhotos = (items) => {
-//   const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
-//   items.forEach ((desc) => {
-//     const photoElement = templateUsersPhoto.cloneNode(true);
-//     photoElement.querySelector('.picture__img').src = desc.url;
-//     photoElement.querySelector('.picture__likes').textContent = desc.likes;
-//     photoElement.querySelector('.picture__comments').textContent = desc.comments.length;
-//     photoElement.addEventListener('click', (evt) => drawFullPhoto(desc, evt));
-//     similarPhotoFragment.append(photoElement);
-//   });
-
-//   document.querySelectorAll('.picture').forEach((elem) => elem.remove());
-//   containerUsersPhoto.append(similarPhotoFragment);
-// };
-
 const renderThumbnails = (similarPhoto, button = 'filter-default') => {
   const similarPhotoFragment = document.createDocumentFragment ();// фрагмент
   switch (button) {

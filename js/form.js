@@ -1,7 +1,7 @@
 /* eslint-disable radix */
 import{viewPhotoNoScroll} from './full-photo.js';
 import{isEscapeKey} from './util.js';
-import{resetPristine} from './form-valid.js';
+import{pristine} from './form-valid.js';
 
 const DEFAULT_VALUE_CONTROL = 100;
 const MIN_VALUE_CONTROL = 25;
@@ -67,122 +67,168 @@ buttonSmaller.addEventListener ('click', onSmallerButtonClick);
 buttonBigger.addEventListener ('click', onBiggerButtonClick);
 
 //Эффект:
-const EFFECTS = [
-  {
-    name: 'none',
-    min: 0,
-    max: 100,
-    step: 1,
-  },
-  {
-    name: 'chrome',
-    style: 'grayscale',
-    min: 0,
-    max: 1,
-    step: 0.1,
-    unit: '',
-  },
-  {
-    name: 'sepia',
-    style: 'sepia',//uploadPreviewImg.style.filter
-    min: 0,
-    max: 1,
-    step: 0.1,
-    unit: '',
-  },
-  {
-    name: 'marvin',
-    style: 'invert',//uploadPreviewImg.style.filter
-    min: 0,
-    max: 100,
-    step: 1,
-    unit: '%',
-  },
-  {
-    name: 'phobos',
-    style: 'blur',//uploadPreviewImg.style.filter
-    min: 0,
-    max: 3,
-    step: 0.1,
-    unit: 'px',
-  },
-  {
-    name: 'heat',
-    style: 'brightness',//uploadPreviewImg.style.filter
-    min: 0,
-    max: 3,
-    step: 0.1,
-    unit: '',
-  }
-];
-const DEFAULT_EFFECT = EFFECTS[0];
-let chosenEffect = DEFAULT_EFFECT;
-
-const isDefault = () => chosenEffect === DEFAULT_EFFECT;
-
-const updateSliderEffect = () => {
-  sliderEffects.classList.remove('hidden');
-  sliderEffects.classList.add('class-class');
-  sliderEffects.noUiSlider.updateOptions({
-    range: {
-      min: chosenEffect.min,
-      max: chosenEffect.max,
-    },
-    step: chosenEffect.step,
-    start: chosenEffect.max,
-  });
-  if (isDefault) {
-    sliderEffects.classList.add('hidden');
-  }
-};
-
-//изиенение эффекта при переключении радиокнопок
-const onFormEffectChange = (evt) => {
-  if (!evt.target.classList.contains('effects__radio')) {
-    return;
-  }
-  chosenEffect = EFFECTS.find((effect) => effect.name === evt.target.value);
-  updateSliderEffect();
-};
-
-const onSliderUpdate = () => {
-  uploadPreviewImg.style.filter = 'none';
-  uploadPreviewImg.className = '';//?????
-  inputEffectValue.value = '';
-  if (isDefault()) {
-    return;
-  }
-  const sliderValue = sliderEffects.noUiSlider.get();
-  uploadPreviewImg.style.filter = `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
-  uploadPreviewImg.classList.add(`effects__preview--${chosenEffect.name}`);
-  inputEffectValue.value = sliderValue;
-};
-
-const resetEffects = () => {
-  chosenEffect = DEFAULT_EFFECT;
-  updateSliderEffect();
-};
+// inputEffectValue.value = START_EFFECT_VALUE;
 
 noUiSlider.create(sliderEffects, {
   range: {
-    min: DEFAULT_EFFECT.min,
-    max: DEFAULT_EFFECT.max,
+    min: 0,
+    max: 100,
   },
-  start: DEFAULT_EFFECT.max,
-  step: DEFAULT_EFFECT.step,
+  start: 100,
+  step: 1,
   connect: 'lower',
+  format: {
+    to: function (value) {
+      return value;
+    },
+    from: function (value) {
+      return parseFloat(value);
+    },
+  },
 });
-updateSliderEffect();
 
-ImageForm.addEventListener ('change', onFormEffectChange);
-sliderEffects.noUiSlider.on('update', onSliderUpdate);
+//изиенение эффекта при переключении радиокнопок
+function onEffectChange (evt) {
+  if (evt.target.checked) {
+    sliderEffects.noUiSlider.on('update', () => {
+      const effectValue = sliderEffects.noUiSlider.get();
+      inputEffectValue.value = effectValue;
+      switch (evt.target.value) {
+        case 'none':
+          uploadPreviewImg.style.filter = null;
+          break;
+        case 'chrome':
+          uploadPreviewImg.style.filter = `grayscale(${effectValue})`;
+          break;
+        case 'sepia':
+          uploadPreviewImg.style.filter = `sepia(${effectValue})`;
+          break;
+        case 'marvin':
+          uploadPreviewImg.style.filter = `invert(${effectValue})`;
+          break;
+        case 'phobos':
+          uploadPreviewImg.style.filter = `blur(${effectValue})`;
+          break;
+        case 'heat':
+          uploadPreviewImg.style.filter = `brightness(${effectValue})`;
+          break;
+      }
+    });
+    uploadPreviewImg.className = `effects__preview--${evt.target.value}`;
+    // uploadPreviewImg.classList.add('`effects__preview--${evt.target.value}`');
+    if(evt.target.value === 'none') {
+      sliderEffects.classList.add('hidden');
+    }
+    if(evt.target.value === 'chrome') {
+      sliderEffects.classList.remove('hidden');
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 1
+        },
+        start: 1,
+        step: 0.1,
+        format: {
+          to: function (value) {
+            return value;
+          },
+          from: function (value) {
+            return value;
+          },
+        }
+      });
+    }
+    if(evt.target.value === 'sepia') {
+      sliderEffects.classList.remove('hidden');
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 1
+        },
+        start: 1,
+        step: 0.1,
+        format: {
+          to: function (value) {
+            return value;
+          },
+          from: function (value) {
+            return value;
+          },
+        }
+      });
+    }
+    if(evt.target.value === 'marvin') {
+      sliderEffects.classList.remove('hidden');
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 100
+        },
+        start: 100,
+        step: 1,
+        format: {
+          to: function (value) {
+            return `${String(value)}%`;
+          },
+          from: function (value) {
+            return parseFloat(value);
+          },
+        },
+      });
+    }
+    if(evt.target.value === 'phobos') {
+      sliderEffects.classList.remove('hidden');
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 3
+        },
+        start: 3,
+        step: 0.1,
+        format: {
+          to: function (value) {
+            return `${String(value)}px`;
+          },
+          from: function (value) {
+            return parseFloat(value);
+          },
+        },
+      });
+    }
+    if(evt.target.value === 'heat') {
+      sliderEffects.classList.remove('hidden');
+      sliderEffects.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: 3
+        },
+        start: 3,
+        step: 0.1,
+        format: {
+          to: function (value) {
+            return value;
+          },
+          from: function (value) {
+            return value;
+          },
+        }
+      });
+    }
+  }
+}
+
+//делегирование
+// effectsList.addEventListener ('input', onEffectChange);
+ImageForm.addEventListener ('change', onEffectChange);
+
 
 //открытие формы ф-я
 function openFormImage () {
   uploadingImage.classList.remove('hidden');
   viewPhotoNoScroll.classList.add('modal-open');
+  uploadPreviewImg.style.filter = null;
+  sliderEffects.classList.add('hidden');
   document.addEventListener ('keydown', onEscapeDown);//закрытие нажатием клавиши Esc.
-
 }
 
 inputUploadingImage.addEventListener('change',() => {
@@ -195,12 +241,10 @@ function closeFormImage () {
   viewPhotoNoScroll.classList.remove('modal-open');
   inputUploadingImage.value = '';// сброс поле загрузки изображения  ?Так у него вообще value нет О_О
   resetScale();
-  resetEffects();
-  resetPristine();
+  pristine.reset();
   ImageForm.reset();
   uploadPreviewImg.style.filter = null;
   sliderEffects.classList.add('hidden');
-
   document.removeEventListener ('keydown', onEscapeDown);
 }
 
