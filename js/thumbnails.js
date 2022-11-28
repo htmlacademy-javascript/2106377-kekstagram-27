@@ -3,6 +3,8 @@ const RANDOM_PHOTO_COUNT = 10;
 const containerUsersPhoto = document.querySelector('.pictures');// контейнер для изображений др пользователей
 const templateUsersPhoto = document.querySelector('#picture').content.querySelector('.picture');// шаблон
 const filtersForm = document.querySelector('.img-filters__form');//форма с кнопкками филтров
+// const filterDefaultButton = filtersForm.querySelector('#filter-default');//кнопка "по умолчанию" -все фото
+const filtertButtons = filtersForm.querySelectorAll('.img-filters__button');//все кнопки выбора фото
 const filtersContainer = document.querySelector('.img-filters');
 
 const comparePhotos = (a, b) => b.comments.length - a.comments.length;
@@ -63,10 +65,9 @@ filtersContainer.classList.remove('img-filters--inactive');
 
 //обработчики
 const setFilterClick = (cb) => {
-  filtersForm.querySelector('#filter-default').classList.remove('img-filters__button--active');
   filtersForm.addEventListener (('click'), (evt) => {
 
-    filtersForm.querySelectorAll('.img-filters__button').forEach((button) => {
+    filtertButtons.forEach((button) => {
       button.classList.remove('img-filters__button--active');
     });
 

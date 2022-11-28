@@ -36,5 +36,5 @@ const sendData = (onSuccess, onFail, body) => {
       onFail(err.message);
     });
 };
-
+//kekstagram
 export {getData, sendData};

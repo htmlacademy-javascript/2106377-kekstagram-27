@@ -1,16 +1,18 @@
 import{isEscapeKey} from './util.js';
 
+const COUNT_UPLOADING_COMMENTS = 5;
+
 const viewFullPhoto = document.querySelector('.big-picture');//окно просомотра
 const viewPhotoNoScroll = document.querySelector('body');
 const fullPhotoImage = document.querySelector('.big-picture__img').querySelector('img');//полное изображение
 const likesCount = document.querySelector('.likes-count');// Количество лайков likes
 const commentsCount = document.querySelector('.comments-count');// Количество комментариев
 const commentCounter = document.querySelector('.social__comment-count');//счётчик комментариев срятать после открытия окна
-const newCommentLoad = document.querySelector('.comments-loader');//загрузка иновых комментариев cрятать после открытия окна
+const buttonCommentsLoader = document.querySelector('.social__comments-loader');//кнопка «Загрузить ещё»
 const descFullPhoto = document.querySelector('.social__caption');//блок описания фото
 const commentList = document.querySelector('.social__comments');// контейнер Список комментариев ul
 const commentListItem = commentList.children;//li
-const buttonCommentsLoader = document.querySelector('.social__comments-loader');//кнопка «Загрузить ещё»
+
 const cancelFullPhoto = document.querySelector('.big-picture__cancel');//кнопка закрытия окна
 
 const onUploadingImageEscKeydown = (evt) => {
@@ -19,18 +21,19 @@ const onUploadingImageEscKeydown = (evt) => {
   }
 };
 
-const getMoreComment = (evt) => {
+const onButtonCommentsLoaderClick = (evt) => {
   evt.preventDefault();
   if(commentList.querySelector('.social__comment.hidden') === null) {
+    buttonCommentsLoader.classList.add('hidden');
     commentCounter.textContent = `${parseInt(commentsCount.textContent, 10)} из ${commentsCount.textContent} комментариев`;
     buttonCommentsLoader.disabled = true;
   } else {
     const hiddenComments = commentList.querySelectorAll('.hidden');//все li с классом hidden
     const numberComments = commentList.children.length;
-    const currentComments = parseInt(commentCounter.textContent, 10) + 5;
+    const currentComments = parseInt(commentCounter.textContent, 10) + COUNT_UPLOADING_COMMENTS;
     const insertCount = currentComments > numberComments ? numberComments : currentComments;
     commentCounter.textContent = `${insertCount} из ${commentsCount.textContent} комментариев`;
-    const length = hiddenComments.length < 5 ? hiddenComments.length : 5;
+    const length = hiddenComments.length < COUNT_UPLOADING_COMMENTS ? hiddenComments.length : COUNT_UPLOADING_COMMENTS;
     for (let i = 0; i < length; i ++) {
       hiddenComments[i].classList.remove('hidden');
     }
@@ -62,7 +65,7 @@ const drawFullPhoto = (desc, evt) => {
     similarCommentFragment.append(itemElement);
   });
 
-  if(commentsCount.textContent > 5 ){
+  if(commentsCount.textContent > COUNT_UPLOADING_COMMENTS ){
     commentCounter.textContent = `5 из ${commentsCount.textContent} комментариев`;
     buttonCommentsLoader.disabled = false;
   } else {
@@ -73,11 +76,11 @@ const drawFullPhoto = (desc, evt) => {
   commentList.innerHTML = '';
   commentList.append(similarCommentFragment);
 
-  for (let i = 5; i < commentListItem.length; i ++) {
+  for (let i = COUNT_UPLOADING_COMMENTS; i < commentListItem.length; i ++) {
     commentListItem[i].classList.add('hidden');
   }
 
-  buttonCommentsLoader.addEventListener('click', getMoreComment);
+  buttonCommentsLoader.addEventListener('click', onButtonCommentsLoaderClick);
 };
 
 // закрытие окна
@@ -85,8 +88,8 @@ function closeFullPhoto () {
   viewFullPhoto.classList.add('hidden');
   viewPhotoNoScroll.classList.remove('modal-open');
   commentCounter.classList.remove('hidden');
-  newCommentLoad.classList.remove('hidden');
-  buttonCommentsLoader.removeEventListener('click', getMoreComment);
+  buttonCommentsLoader.classList.remove('hidden');
+  buttonCommentsLoader.removeEventListener('click', onButtonCommentsLoaderClick);
   document.removeEventListener ('keydown', onUploadingImageEscKeydown);
 }
 

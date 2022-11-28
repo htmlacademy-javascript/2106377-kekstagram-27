@@ -1,9 +1,8 @@
-import './create-photos.js';
 import './thumbnails.js';
 import './full-photo.js';
 import './form.js';
 import './form-valid.js';
-import './Uploading-photo.js';
+import './uploading-photo.js';
 import {closeFormImage} from './form.js';
 import {setImageFormSubmit} from './form-valid.js';
 import {renderThumbnails, setFilterClick} from './thumbnails.js';
